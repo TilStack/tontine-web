@@ -32,7 +32,7 @@ export class AuthService {
     const user = this.auth.currentUser;
     if (!user) return null;
     const result = await user.getIdTokenResult();
-    return result.claims as UserClaims;
+    return result.claims as unknown as UserClaims;
   }
 
   async forceTokenRefresh(): Promise<void> {
