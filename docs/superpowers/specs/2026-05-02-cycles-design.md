@@ -190,7 +190,7 @@ Callable, `role === 'admin' | 'bureau'` requis.
 
 1. Dans une transaction : écrit `cotisations/{userId}` avec `paid: true`, `paidAt: now()`, `recordedBy: callerUid`
 2. Incrémente `cycle.totalPaid` atomiquement
-3. Relit `memberCount` (longueur de `saison.memberOrder`)
+3. Relit `memberCount` depuis `saison.totalCycles` (source de vérité immuable — `memberOrder.length` reste constant même après pénalité, mais `totalCycles` est explicitement immuable)
 4. Si `totalPaid === memberCount` → appelle `_closeCycle(deptId, saisonId, cycleId, 'auto')`
 
 ### `_closeCycle(deptId, saisonId, cycleId, closedBy)` — helper interne
