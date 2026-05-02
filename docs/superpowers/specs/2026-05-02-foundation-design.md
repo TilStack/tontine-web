@@ -6,7 +6,7 @@
 
 ## Contexte
 
-Projet Angular 20 + Firebase entièrement vierge. Ce spec couvre le socle sur lequel tous les autres modules (cycles, cotisations, pénalités) seront construits. Les autres sous-systèmes ne peuvent pas être développés sans cette fondation.
+Projet Angular 20.1 (CLI 20.3) + Firebase entièrement vierge. Ce spec couvre le socle sur lequel tous les autres modules (cycles, cotisations, pénalités) seront construits. Les autres sous-systèmes ne peuvent pas être développés sans cette fondation.
 
 ---
 
@@ -29,7 +29,7 @@ src/app/
 ├── core/
 │   ├── models/          # User, Department, Invitation, DepartmentRequest
 │   ├── services/        # AuthService, UserService, DepartmentService
-│   └── guards/          # authGuard, deptGuard, superAdminGuard
+│   └── guards/          # authGuard, deptGuard, mustResetPasswordGuard, superAdminGuard
 ├── shared/
 │   └── components/
 │       └── app-shell/   # AppShellComponent — sidebar + <router-outlet>
@@ -65,6 +65,7 @@ src/app/
   rang: number
   hasBenefited: boolean
   joinedAt: Timestamp
+  mustResetPassword: boolean     # true pour les comptes créés par l'admin (flux 2B)
 
 /departments/{deptId}/invitations/{token}
   email: string
@@ -121,9 +122,11 @@ match /departments/{deptId}/users/{userId} {
                || isSuperAdmin();
 }
 
-// Invitations : créées par admin, lues par token valide
+// Invitations : créées par admin uniquement, lues par utilisateur connecté
+// La validation métier du token (expiration, already used) est faite côté Cloud Function
 match /departments/{deptId}/invitations/{token} {
-  allow read:  if true;   // lien public — validé côté Cloud Function
+  allow read:  if request.auth != null
+               && request.time < resource.data.expiresAt;
   allow write: if inDept(deptId) && getUserRole(deptId) == "admin";
 }
 
@@ -156,7 +159,7 @@ export const routes: Routes = [
   },
   {
     path: 'app',
-    canActivate: [authGuard, deptGuard],
+    canActivate: [authGuard, deptGuard, mustResetPasswordGuard],
     component: AppShellComponent,
     loadChildren: () => import('./features/dashboard/dashboard.routes')
   },
@@ -171,6 +174,7 @@ export const routes: Routes = [
 |-------|-----------|----------------------|
 | `authGuard` | `auth.currentUser != null` | `/auth/login` |
 | `deptGuard` | `token.deptId` présent | `/auth/no-department` |
+| `mustResetPasswordGuard` | `user.mustResetPassword === false` | `/auth/reset-password` |
 | `superAdminGuard` | `token.role === 'super_admin'` | `/app` |
 
 ---
@@ -207,6 +211,8 @@ Admin saisit email + nom → Cloud Function `createManagedUser` (crée compte + 
 | Paramètres | — | — | ✅ |
 
 La sidebar affiche : nom du département, statut du cycle en cours (`● Cycle actif` / `○ Aucun cycle`), avatar + nom + rôle de l'utilisateur en bas.
+
+**Règle d'invitation :** seul le rôle `admin` peut créer des invitations et assigner les rôles `bureau` et `membre`. Le rôle `bureau` n'a pas accès à la fonctionnalité d'invitation — ce droit est volontairement restreint à l'admin pour éviter toute escalade de privilèges non contrôlée.
 
 ---
 
