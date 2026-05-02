@@ -23,6 +23,7 @@
   },
   "private": true,
   "dependencies": {
+    "@angular/animations": "^21.2.11",
     "@angular/cdk": "^20.2.14",
     "@angular/common": "^20.1.0",
     "@angular/compiler": "^20.1.0",
@@ -31,6 +32,7 @@
     "@angular/forms": "^20.1.0",
     "@angular/material": "^20.2.14",
     "@angular/platform-browser": "^20.1.0",
+    "@angular/platform-browser-dynamic": "^21.2.11",
     "@angular/platform-server": "^20.1.0",
     "@angular/router": "^20.1.0",
     "@angular/ssr": "^20.1.0",
