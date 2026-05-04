@@ -45,3 +45,5 @@ Thumbs.db
 # Firebase config — real values must not be committed
 src/environments/environment.ts
 src/environments/environment.prod.ts
+
+.superpowers/
