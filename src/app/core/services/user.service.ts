@@ -5,6 +5,8 @@ import {
   docData,
   setDoc,
   updateDoc,
+  collection,
+  collectionData,
   serverTimestamp,
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
@@ -17,6 +19,11 @@ export class UserService {
   watchProfile(deptId: string, uid: string): Observable<UserProfile | undefined> {
     const ref = doc(this.firestore, `departments/${deptId}/users/${uid}`);
     return docData(ref) as Observable<UserProfile | undefined>;
+  }
+
+  watchAllMembers(deptId: string): Observable<UserProfile[]> {
+    const ref = collection(this.firestore, `departments/${deptId}/users`);
+    return collectionData(ref, { idField: 'uid' }) as Observable<UserProfile[]>;
   }
 
   async createProfile(

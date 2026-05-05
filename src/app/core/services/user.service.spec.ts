@@ -1,5 +1,5 @@
 import { TestBed } from '@angular/core/testing';
-import { Firestore, doc, docData } from '@angular/fire/firestore';
+import { Firestore, doc, docData, collection, collectionData } from '@angular/fire/firestore';
 import { of } from 'rxjs';
 import { UserService } from './user.service';
 import { UserProfile } from '../models/user.model';
@@ -21,6 +21,8 @@ jest.mock('@angular/fire/firestore', () => ({
   docData: jest.fn(),
   setDoc: jest.fn(),
   updateDoc: jest.fn(),
+  collection: jest.fn(),
+  collectionData: jest.fn(),
 }));
 
 describe('UserService', () => {
@@ -44,6 +46,19 @@ describe('UserService', () => {
 
     service.watchProfile('dept-1', 'user-1').subscribe((profile) => {
       expect(profile?.displayName).toBe('Israel T.');
+      done();
+    });
+  });
+
+  it('watchAllMembers() should return an observable of UserProfile[]', (done) => {
+    const mockProfiles = [mockProfile, { ...mockProfile, uid: 'user-2', displayName: 'Alice' }];
+
+    (collection as jest.Mock).mockReturnValue('colRef');
+    (collectionData as jest.Mock).mockReturnValue(of(mockProfiles));
+
+    service.watchAllMembers('dept-1').subscribe((profiles) => {
+      expect(profiles).toHaveLength(2);
+      expect(profiles[0].displayName).toBe('Israel T.');
       done();
     });
   });
