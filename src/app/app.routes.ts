@@ -26,8 +26,18 @@ export const routes: Routes = [
     path: 'app',
     canActivate: [authGuard, deptGuard, mustResetPasswordGuard],
     component: AppShellComponent,
-    loadChildren: () =>
-      import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
+    children: [
+      {
+        path: '',
+        loadChildren: () =>
+          import('./features/dashboard/dashboard.routes').then((m) => m.DASHBOARD_ROUTES),
+      },
+      {
+        path: 'cycles',
+        loadChildren: () =>
+          import('./features/cycles/cycles.routes').then((m) => m.CYCLES_ROUTES),
+      },
+    ],
   },
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
   { path: '**', redirectTo: 'auth/login' },
