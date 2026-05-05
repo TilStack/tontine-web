@@ -1,5 +1,7 @@
+// functions/src/confirm-reception.ts
 import * as admin from 'firebase-admin';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import { notifyConfirmation } from './_notify.js';
 
 export const confirmReception = onCall(async (request) => {
   if (!request.auth) {
@@ -16,8 +18,8 @@ export const confirmReception = onCall(async (request) => {
     throw new HttpsError('invalid-argument', 'saisonId et cycleId requis.');
   }
 
-  const cycleSnap = await admin
-    .firestore()
+  const db = admin.firestore();
+  const cycleSnap = await db
     .doc(`departments/${deptId}/saisons/${saisonId}/cycles/${cycleId}`)
     .get();
 
@@ -45,6 +47,45 @@ export const confirmReception = onCall(async (request) => {
   await cycleSnap.ref.update({
     confirmedAt: admin.firestore.Timestamp.now(),
     confirmedBy: request.auth.uid,
+  });
+
+  // Fetch beneficiary displayName
+  const benefSnap = await db
+    .doc(`departments/${deptId}/users/${request.auth.uid}`)
+    .get();
+  const beneficiaryName =
+    (benefSnap.data()?.['displayName'] as string) ?? 'Le bénéficiaire';
+
+  // Fetch dept users for admin/bureau notification recipients
+  const usersSnap = await db.collection(`departments/${deptId}/users`).get();
+  const adminUids: string[] = [];
+  const bureauUids: string[] = [];
+  const adminEmails: string[] = [];  // combined admin + bureau emails
+
+  usersSnap.forEach((doc) => {
+    const data = doc.data();
+    const email = data['email'] as string;
+    const role = data['role'] as string;
+    if (role === 'admin') {
+      adminUids.push(doc.id);
+      adminEmails.push(email);
+    }
+    if (role === 'bureau') {
+      bureauUids.push(doc.id);
+      adminEmails.push(email);
+    }
+  });
+
+  await notifyConfirmation({
+    db,
+    deptId,
+    beneficiaryUid: request.auth.uid,
+    beneficiaryName,
+    montantVerse: cycle['montantVerse'] as number,
+    cycleIndex: cycle['index'] as number,
+    adminUids,
+    bureauUids,
+    adminEmails,
   });
 
   return { success: true };
