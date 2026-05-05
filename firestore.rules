@@ -34,6 +34,16 @@ service cloud.firestore {
       match /users/{userId} {
         allow read: if inDept(deptId) || isSuperAdmin();
         allow write: if isAdminOfDept(deptId) || isSuperAdmin();
+
+        // Per-user notifications — written by Admin SDK, read/mark-read by owner only
+        match /notifications/{notifId} {
+          allow read: if request.auth.uid == userId && inDept(deptId);
+          allow update: if request.auth.uid == userId
+                        && inDept(deptId)
+                        && request.resource.data.diff(resource.data)
+                           .affectedKeys().hasOnly(['read']);
+          // create and delete: Admin SDK only
+        }
       }
 
       // Invitations — créées par l'admin, lues par tout utilisateur authentifié non expiré
@@ -83,6 +93,11 @@ service cloud.firestore {
     match /users/{userId} {
       allow read, write: if isAuthenticated() && request.auth.uid == userId;
       allow read: if isSuperAdmin();
+    }
+
+    // Email queue consumed by Firebase Trigger Email extension — Admin SDK only
+    match /mail/{docId} {
+      allow read, write: if false;
     }
   }
 }

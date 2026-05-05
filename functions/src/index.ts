@@ -15,3 +15,6 @@ export { forceCloseCycle } from './force-close-cycle.js';
 export { openNextCycle } from './open-next-cycle.js';
 export { confirmReception } from './confirm-reception.js';
 export { closeCycleCron } from './close-cycle-cron.js';
+
+// Notifications module
+export { j5RemindCron } from './j5-reminder-cron.js';
