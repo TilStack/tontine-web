@@ -46,16 +46,22 @@ service cloud.firestore {
         allow delete: if isAdminOfDept(deptId) || isSuperAdmin();
       }
 
-      // Cycles (stub pour le prochain spec)
-      match /cycles/{cycleId} {
+      // Saisons — membres lisent ; écritures via Admin SDK uniquement
+      match /saisons/{saisonId} {
         allow read: if inDept(deptId) || isSuperAdmin();
-        allow write: if isAdminOfDept(deptId) || isSuperAdmin();
-      }
+        allow write: if false;
 
-      // Cotisations (stub)
-      match /cycles/{cycleId}/cotisations/{cotisationId} {
-        allow read: if inDept(deptId) || isSuperAdmin();
-        allow write: if inDept(deptId) || isSuperAdmin();
+        // Cycles — membres lisent ; écritures via Admin SDK uniquement
+        match /cycles/{cycleId} {
+          allow read: if inDept(deptId) || isSuperAdmin();
+          allow write: if false;
+
+          // Cotisations — membres lisent ; écritures via Admin SDK uniquement
+          match /cotisations/{userId} {
+            allow read: if inDept(deptId) || isSuperAdmin();
+            allow write: if false;
+          }
+        }
       }
 
       // Caisse (stub)
