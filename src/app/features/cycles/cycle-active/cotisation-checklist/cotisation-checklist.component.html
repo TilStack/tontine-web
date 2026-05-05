@@ -1,0 +1,37 @@
+<mat-list>
+  @for (member of members; track member.uid) {
+    @let cot = getCotisation(member.uid);
+    <mat-list-item>
+      <mat-icon matListItemIcon [style.color]="cot?.paid ? 'green' : 'red'">
+        {{ cot?.paid ? 'check_circle' : 'cancel' }}
+      </mat-icon>
+      <span matListItemTitle>{{ member.displayName }}</span>
+      <span matListItemLine>
+        @if (cot?.paid) {
+          Payé
+        } @else if (cot?.penalized) {
+          Pénalisé
+        } @else {
+          En attente
+        }
+      </span>
+
+      @if (canMarkPaid && !cot?.paid && member.uid !== null) {
+        <button
+          matListItemMeta
+          mat-icon-button
+          color="primary"
+          [disabled]="markingUid === member.uid"
+          (click)="onMarkPaid(member.uid)"
+          aria-label="Marquer payé"
+        >
+          @if (markingUid === member.uid) {
+            <mat-spinner diameter="20" />
+          } @else {
+            <mat-icon>add_task</mat-icon>
+          }
+        </button>
+      }
+    </mat-list-item>
+  }
+</mat-list>
