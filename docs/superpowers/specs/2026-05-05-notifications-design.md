@@ -151,7 +151,7 @@ interface MailDoc {
 ## 4. Backend — New Scheduled Function: `j5-reminder-cron.ts`
 
 - **Schedule:** `'0 7 * * *'` UTC = 08:00 Africa/Douala (UTC+1, no DST).
-- **Query:** `collectionGroup('cycles')` where `status === 'open'` and `deadline` falls on the calendar day `today + 5` in Africa/Douala timezone. Since deadlines are always set to the 5th of the month at 22:59 UTC+1 (22:59 Africa/Douala = 21:59 UTC), the query window in UTC is `[targetDay 23:00 UTC - 1h, targetDay+1 23:00 UTC - 1h)`.
+- **Query:** `collectionGroup('cycles')` where `status === 'open'` and `deadline` falls on the calendar day `today + 5` in Africa/Douala timezone. Concretely: compute `targetDate` = midnight Africa/Douala on day D+5; query `deadline >= targetDate` and `deadline < targetDate + 24h` (both converted to UTC for Firestore). Since Africa/Douala = UTC+1, midnight Africa/Douala = 23:00 UTC the previous calendar day in UTC — the implementation plan provides the exact UTC arithmetic.
 - **Per matched cycle:**
   1. Read `cotisations` subcollection — collect UIDs where `paid === false`.
   2. Read `departments/{deptId}/users` — collect UIDs/emails for admin and bureau roles.
