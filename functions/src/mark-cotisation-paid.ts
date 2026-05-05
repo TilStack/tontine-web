@@ -1,6 +1,8 @@
+// functions/src/mark-cotisation-paid.ts
 import * as admin from 'firebase-admin';
 import { onCall, HttpsError } from 'firebase-functions/v2/https';
 import { closeCycle } from './_close-cycle.js';
+import { notifyPaymentRecorded } from './_notify.js';
 
 export const markCotisationPaid = onCall(async (request) => {
   if (!request.auth) {
@@ -39,8 +41,9 @@ export const markCotisationPaid = onCall(async (request) => {
   const saisonRef = db.doc(`departments/${deptId}/saisons/${saisonId}`);
   const now = admin.firestore.Timestamp.now();
 
-  // Transaction: write cotisation + increment totalPaid atomically
-  const newTotalPaid = await db.runTransaction(async (txn) => {
+  // Transaction: write cotisation + increment totalPaid atomically.
+  // Returns values needed for auto-close check and notification.
+  const txResult = await db.runTransaction(async (txn) => {
     const [cotisationSnap, cycleSnap, saisonSnap] = await Promise.all([
       txn.get(cotisationRef),
       txn.get(cycleRef),
@@ -66,14 +69,30 @@ export const markCotisationPaid = onCall(async (request) => {
     });
     txn.update(cycleRef, { totalPaid: updatedTotalPaid });
 
-    // Return both values needed for auto-close check
-    return { updatedTotalPaid, totalCycles: saisonSnap.data()?.['totalCycles'] as number };
+    return {
+      updatedTotalPaid,
+      totalCycles: saisonSnap.data()?.['totalCycles'] as number,
+      montantCotisation: saisonSnap.data()?.['montantCotisation'] as number,
+      cycleIndex: cycleSnap.data()?.['index'] as number,
+    };
   });
 
   // Auto-close if all members have paid (outside transaction to avoid nesting)
-  if (newTotalPaid.updatedTotalPaid === newTotalPaid.totalCycles) {
+  if (txResult.updatedTotalPaid === txResult.totalCycles) {
     await closeCycle(db, deptId, saisonId, cycleId, 'auto');
   }
+
+  // Notify the paying member — fetch their email from their profile
+  const userSnap = await db.doc(`departments/${deptId}/users/${userId}`).get();
+  const userEmail = (userSnap.data()?.['email'] as string) ?? '';
+  await notifyPaymentRecorded({
+    db,
+    deptId,
+    userId,
+    userEmail,
+    cycleIndex: txResult.cycleIndex,
+    montant: txResult.montantCotisation,
+  });
 
   return { success: true };
 });
