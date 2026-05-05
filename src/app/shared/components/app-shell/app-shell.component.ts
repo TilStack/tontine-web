@@ -14,6 +14,7 @@ import { MatButtonModule } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { UserProfile, UserRole } from '../../../core/models/user.model';
+import { NotificationBellComponent } from '../notification-bell/notification-bell.component';
 
 interface NavItem {
   label: string;
@@ -44,6 +45,7 @@ const NAV_ITEMS: NavItem[] = [
     MatIconModule,
     MatToolbarModule,
     MatButtonModule,
+    NotificationBellComponent,
   ],
   templateUrl: './app-shell.component.html',
   styleUrl: './app-shell.component.scss',
@@ -56,6 +58,7 @@ export class AppShellComponent implements OnInit {
 
   profile = signal<UserProfile | null>(null);
   deptId = signal<string | null>(null);
+  uid = signal<string | null>(null);
 
   visibleNavItems = computed(() => {
     const role = this.profile()?.role;
@@ -68,10 +71,11 @@ export class AppShellComponent implements OnInit {
     if (!claims?.deptId) return;
     this.deptId.set(claims.deptId);
 
-    const uid = this.authService.currentUser?.uid;
-    if (!uid) return;
+    const currentUid = this.authService.currentUser?.uid;
+    if (!currentUid) return;
+    this.uid.set(currentUid);
 
-    this.userService.watchProfile(claims.deptId, uid).subscribe((p) => {
+    this.userService.watchProfile(claims.deptId, currentUid).subscribe((p) => {
       if (p) this.profile.set(p);
     });
   }

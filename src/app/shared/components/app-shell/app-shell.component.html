@@ -25,6 +25,9 @@
           <span class="user-role">{{ p.role }}</span>
         </div>
       }
+      @if (deptId() && uid()) {
+        <app-notification-bell [deptId]="deptId()!" [uid]="uid()!" />
+      }
       <button mat-icon-button (click)="logout()" aria-label="Déconnexion">
         <mat-icon>logout</mat-icon>
       </button>
