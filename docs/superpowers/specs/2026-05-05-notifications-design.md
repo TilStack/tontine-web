@@ -201,6 +201,10 @@ await notifyConfirmation({ db, deptId, beneficiaryUid, beneficiaryName,
   montantVerse, cycleIndex, adminUids, bureauUids, adminEmails });
 ```
 
+`notifyConfirmation` in `_notify.ts` must carry a comment documenting the deliberate asymmetry:
+- Beneficiary → **in-app only** (no email): they just performed the action themselves, an email is redundant.
+- Admin & Bureau → **in-app + email**: they need an async paper trail since they may not be in the app at that moment.
+
 ### `index.ts`
 
 Export the new scheduled function:
@@ -221,8 +225,12 @@ watchNotifications(deptId: string, uid: string): Observable<NotificationDoc[]>
 // Returns all docs (read + unread); component filters for badge count
 
 markAsRead(deptId: string, uid: string, notifId: string): Promise<void>
-// Direct Firestore client write: updateDoc with { read: true }
+// Single updateDoc with { read: true }
 // Firestore rule restricts update to the 'read' field only
+
+markAllAsRead(deptId: string, uid: string, notifIds: string[]): Promise<void>
+// Single db.batch() with one updateDoc({ read: true }) per notifId
+// Avoids N separate round-trips when marking all unread notifications as read
 ```
 
 ---
