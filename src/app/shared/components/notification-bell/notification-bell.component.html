@@ -1,0 +1,19 @@
+<button
+  mat-icon-button
+  [matMenuTriggerFor]="notifMenu"
+  [matBadge]="unreadCount()"
+  [matBadgeHidden]="unreadCount() === 0"
+  matBadgeColor="warn"
+  aria-label="Notifications">
+  <mat-icon>notifications</mat-icon>
+</button>
+
+<mat-menu #notifMenu="matMenu">
+  <div (click)="$event.stopPropagation()">
+    <app-notification-panel
+      [deptId]="deptId"
+      [uid]="uid"
+      [notifications]="notifications()">
+    </app-notification-panel>
+  </div>
+</mat-menu>
