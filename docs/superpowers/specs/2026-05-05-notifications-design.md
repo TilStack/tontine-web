@@ -2,11 +2,13 @@
 
 > **For agentic workers:** This spec is implemented via `docs/superpowers/plans/2026-05-05-notifications.md`.
 
-**Goal:** Add a dual-channel notification system (in-app Firestore + email via Firebase Trigger Email extension) covering 5 lifecycle events in the tontine cycle.
+**Goal:** Add in-app notifications (Firestore, TTL 30 days) for 5 tontine lifecycle events. Email delivery is implemented but disabled pending Blaze plan activation.
 
-**Architecture:** A shared `_notify.ts` helper module (Cloud Functions side, not deployed) writes atomically to per-user Firestore notification documents and to a root `/mail` collection. Angular `NotificationService` + `NotificationBellComponent` surface unread notifications in the app shell header.
+**Architecture:** A shared `_notify.ts` helper module (Cloud Functions side, not deployed) writes to per-user Firestore notification documents. Email logic is present in `_notify.ts` but commented out (`// TODO: activer emails quand plan Blaze disponible`). Angular `NotificationService` + `NotificationBellComponent` surface unread notifications in the app shell header.
 
-**Tech Stack:** Angular 20, AngularFire v20, Firebase Cloud Functions v2 (Admin SDK), Firebase Extension "Trigger Email from Firestore" (SendGrid), Angular Material, RxJS, `toSignal`.
+**Tech Stack:** Angular 20, AngularFire v20, Firebase Cloud Functions v2 (Admin SDK), Angular Material, RxJS, `toSignal`.
+
+> **Solution C — Phase actuelle:** In-app uniquement. Les emails seront activés en décommentant les sections `// TODO: activer emails` dans `_notify.ts` une fois le plan Blaze Firebase configuré et l'extension "Trigger Email from Firestore" installée.
 
 ---
 
