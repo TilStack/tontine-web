@@ -4,6 +4,7 @@ import { authGuard } from './core/guards/auth.guard';
 import { deptGuard } from './core/guards/dept.guard';
 import { mustResetPasswordGuard } from './core/guards/must-reset-password.guard';
 import { superAdminGuard } from './core/guards/super-admin.guard';
+import { adminOrBureauGuard } from './core/guards/admin-or-bureau.guard';
 
 export const routes: Routes = [
   {
@@ -36,6 +37,12 @@ export const routes: Routes = [
         path: 'cycles',
         loadChildren: () =>
           import('./features/cycles/cycles.routes').then((m) => m.CYCLES_ROUTES),
+      },
+      {
+        path: 'caisse',
+        canActivate: [adminOrBureauGuard],
+        loadChildren: () =>
+          import('./features/caisse/caisse.routes').then((m) => m.CAISSE_ROUTES),
       },
     ],
   },
