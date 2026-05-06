@@ -1,0 +1,48 @@
+<h2 mat-dialog-title>Ajouter une dépense</h2>
+
+<mat-dialog-content>
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 8px;">
+      <mat-label>Montant (FCFA)</mat-label>
+      <input matInput type="number" formControlName="montant" min="1" />
+      @if (form.get('montant')?.hasError('required') && form.get('montant')?.touched) {
+        <mat-error>Le montant est requis.</mat-error>
+      }
+      @if (form.get('montant')?.hasError('min') && form.get('montant')?.touched) {
+        <mat-error>Le montant doit être supérieur à 0.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 8px;">
+      <mat-label>Catégorie</mat-label>
+      <mat-select formControlName="categorie">
+        @for (cat of categories; track cat.value) {
+          <mat-option [value]="cat.value">{{ cat.label }}</mat-option>
+        }
+      </mat-select>
+      @if (form.get('categorie')?.hasError('required') && form.get('categorie')?.touched) {
+        <mat-error>La catégorie est requise.</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline" style="width: 100%;">
+      <mat-label>Libellé (optionnel)</mat-label>
+      <input matInput formControlName="libelle" maxlength="200" />
+    </mat-form-field>
+
+    @if (error()) {
+      <p style="color: #f44336; margin-top: 8px; font-size: 14px;">{{ error() }}</p>
+    }
+  </form>
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button mat-dialog-close>Annuler</button>
+  <button
+    mat-raised-button
+    color="primary"
+    [disabled]="form.invalid || loading()"
+    (click)="submit()">
+    {{ loading() ? 'Enregistrement…' : 'Enregistrer' }}
+  </button>
+</mat-dialog-actions>
