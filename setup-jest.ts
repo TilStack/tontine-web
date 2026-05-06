@@ -1,1 +1,4 @@
-import 'jest-preset-angular/setup-jest';
+// setup-jest.ts
+import { setupZonelessTestEnv } from 'jest-preset-angular/setup-env/zoneless';
+
+setupZonelessTestEnv();

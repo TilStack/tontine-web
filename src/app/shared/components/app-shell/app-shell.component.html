@@ -1,0 +1,40 @@
+<mat-sidenav-container class="shell-container">
+  <mat-sidenav mode="side" opened class="sidenav">
+    <div class="dept-header">
+      <span class="dept-label">Département</span>
+      <span class="dept-name">{{ deptId() ?? '…' }}</span>
+    </div>
+
+    <mat-nav-list>
+      @for (item of visibleNavItems(); track item.route) {
+        <a mat-list-item
+           [routerLink]="item.route"
+           routerLinkActive="active-link"
+           [routerLinkActiveOptions]="{ exact: item.route === '/app' }">
+          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
+          <span matListItemTitle>{{ item.label }}</span>
+        </a>
+      }
+    </mat-nav-list>
+
+    <div class="user-footer">
+      @if (profile(); as p) {
+        <div class="avatar">{{ p.displayName.charAt(0) }}</div>
+        <div class="user-info">
+          <span class="user-name">{{ p.displayName }}</span>
+          <span class="user-role">{{ p.role }}</span>
+        </div>
+      }
+      @if (deptId() && uid()) {
+        <app-notification-bell [deptId]="deptId()!" [uid]="uid()!" />
+      }
+      <button mat-icon-button (click)="logout()" aria-label="Déconnexion">
+        <mat-icon>logout</mat-icon>
+      </button>
+    </div>
+  </mat-sidenav>
+
+  <mat-sidenav-content class="main-content">
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>

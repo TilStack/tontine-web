@@ -1,0 +1,62 @@
+<div class="setup-container">
+  <h2>Créer une nouvelle saison</h2>
+
+  @if (seniorMembers().length < 2) {
+    <p>Le département doit avoir au moins 2 membres pour créer une saison.</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()">
+
+      <mat-form-field appearance="outline">
+        <mat-label>Mode d'ordre</mat-label>
+        <mat-select formControlName="mode">
+          <mat-option value="lottery">Tirage au sort (rangs 3+ aléatoires)</mat-option>
+          <mat-option value="fixed">Rotation fixe (défini manuellement)</mat-option>
+        </mat-select>
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Montant de cotisation (FCFA)</mat-label>
+        <input matInput type="number" formControlName="montantCotisation" />
+      </mat-form-field>
+
+      <h3>Rangs 1 et 2 — Membres les plus anciens (immuables)</h3>
+      <mat-list>
+        @for (member of seniorMembers(); track member.uid; let i = $index) {
+          <mat-list-item>
+            <mat-icon matListItemIcon>lock</mat-icon>
+            <span matListItemTitle>Rang {{ i + 1 }} — {{ member.displayName }}</span>
+          </mat-list-item>
+        }
+      </mat-list>
+
+      @if (mode() === 'fixed' && reorderableMembers().length > 0) {
+        <h3>Rangs 3+ — Glissez pour réordonner</h3>
+        <div cdkDropList (cdkDropListDropped)="drop($event)">
+          @for (member of reorderableMembers(); track member.uid; let i = $index) {
+            <div class="drag-item" cdkDrag>
+              <mat-icon>drag_indicator</mat-icon>
+              Rang {{ i + 3 }} — {{ member.displayName }}
+            </div>
+          }
+        </div>
+      }
+
+      @if (mode() === 'lottery' && reorderableMembers().length > 0) {
+        <p>Les rangs 3+ seront déterminés par tirage au sort côté serveur.</p>
+      }
+
+      @if (error()) {
+        <p class="error">{{ error() }}</p>
+      }
+
+      <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading()">
+        @if (loading()) {
+          <mat-spinner diameter="20" />
+        } @else {
+          Créer la saison
+        }
+      </button>
+
+    </form>
+  }
+</div>

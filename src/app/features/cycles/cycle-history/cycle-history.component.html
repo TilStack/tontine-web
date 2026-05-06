@@ -1,0 +1,56 @@
+<div class="history-container">
+  <h2>Historique des cycles</h2>
+
+  @if (!data()) {
+    <mat-spinner />
+  } @else if (!data()!.cycles.length) {
+    <mat-card>
+      <mat-card-content>
+        <p>Aucun cycle terminé pour cette saison.</p>
+      </mat-card-content>
+    </mat-card>
+  } @else {
+    <table mat-table [dataSource]="data()!.cycles">
+
+      <ng-container matColumnDef="index">
+        <th mat-header-cell *matHeaderCellDef>Cycle</th>
+        <td mat-cell *matCellDef="let cycle">{{ cycle.index }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="beneficiary">
+        <th mat-header-cell *matHeaderCellDef>Bénéficiaire</th>
+        <td mat-cell *matCellDef="let cycle">{{ getMemberName(cycle.beneficiaryUid) }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="montantVerse">
+        <th mat-header-cell *matHeaderCellDef>Montant versé</th>
+        <td mat-cell *matCellDef="let cycle">{{ cycle.montantVerse | number }} FCFA</td>
+      </ng-container>
+
+      <ng-container matColumnDef="montantCaisse">
+        <th mat-header-cell *matHeaderCellDef>Caisse</th>
+        <td mat-cell *matCellDef="let cycle">{{ cycle.montantCaisse | number }} FCFA</td>
+      </ng-container>
+
+      <ng-container matColumnDef="closedAt">
+        <th mat-header-cell *matHeaderCellDef>Clôturé le</th>
+        <td mat-cell *matCellDef="let cycle">
+          {{ cycle.closedAt?.toDate() | date:'d MMM yyyy' }}
+          <small>({{ cycle.closedBy }})</small>
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="confirmed">
+        <th mat-header-cell *matHeaderCellDef>Confirmé</th>
+        <td mat-cell *matCellDef="let cycle">
+          <mat-icon [style.color]="cycle.confirmedAt ? 'green' : 'orange'">
+            {{ cycle.confirmedAt ? 'check_circle' : 'pending' }}
+          </mat-icon>
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+      <tr mat-row *matRowDef="let row; columns: displayedColumns;"></tr>
+    </table>
+  }
+</div>

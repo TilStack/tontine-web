@@ -1,32 +1,20 @@
-/**
- * Import function triggers from their respective submodules:
- *
- * import {onCall} from "firebase-functions/v2/https";
- * import {onDocumentWritten} from "firebase-functions/v2/firestore";
- *
- * See a full list of supported triggers at https://firebase.google.com/docs/functions
- */
+import * as admin from 'firebase-admin';
+import { setGlobalOptions } from 'firebase-functions';
 
-import {setGlobalOptions} from "firebase-functions";
-import {onRequest} from "firebase-functions/https";
-import * as logger from "firebase-functions/logger";
-
-// Start writing functions
-// https://firebase.google.com/docs/functions/typescript
-
-// For cost control, you can set the maximum number of containers that can be
-// running at the same time. This helps mitigate the impact of unexpected
-// traffic spikes by instead downgrading performance. This limit is a
-// per-function limit. You can override the limit for each function using the
-// `maxInstances` option in the function's options, e.g.
-// `onRequest({ maxInstances: 5 }, (req, res) => { ... })`.
-// NOTE: setGlobalOptions does not apply to functions using the v1 API. V1
-// functions should each use functions.runWith({ maxInstances: 10 }) instead.
-// In the v1 API, each function can only serve one request per container, so
-// this will be the maximum concurrent request count.
+admin.initializeApp();
 setGlobalOptions({ maxInstances: 10 });
 
-// export const helloWorld = onRequest((request, response) => {
-//   logger.info("Hello logs!", {structuredData: true});
-//   response.send("Hello from Firebase!");
-// });
+export { validateInvitation, acceptInvitation } from './accept-invitation.js';
+export { createManagedUser } from './create-managed-user.js';
+export { provisionDepartment } from './provision-department.js';
+
+// Cycles module
+export { createSaison } from './create-saison.js';
+export { markCotisationPaid } from './mark-cotisation-paid.js';
+export { forceCloseCycle } from './force-close-cycle.js';
+export { openNextCycle } from './open-next-cycle.js';
+export { confirmReception } from './confirm-reception.js';
+export { closeCycleCron } from './close-cycle-cron.js';
+
+// Notifications module
+export { j5RemindCron } from './j5-reminder-cron.js';

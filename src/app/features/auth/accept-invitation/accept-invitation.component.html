@@ -1,0 +1,44 @@
+<div class="invitation-wrapper">
+  <div class="invitation-card">
+
+    @if (tokenValid() === null) {
+      <p>Vérification du lien…</p>
+    }
+
+    @if (tokenValid() === false) {
+      <h2>Lien invalide ou expiré</h2>
+      <p>Ce lien d'invitation n'est plus valide. Contactez votre administrateur.</p>
+      <a routerLink="/auth/login">Retour à la connexion</a>
+    }
+
+    @if (tokenValid() === true) {
+      <h2>Créez votre compte</h2>
+      <p>Invitation pour : <strong>{{ invitationEmail() }}</strong></p>
+
+      <form [formGroup]="form" (ngSubmit)="submit()">
+        <mat-form-field appearance="outline">
+          <mat-label>Votre nom complet</mat-label>
+          <input matInput formControlName="displayName" autocomplete="name" />
+        </mat-form-field>
+
+        <mat-form-field appearance="outline">
+          <mat-label>Mot de passe</mat-label>
+          <input matInput type="password" formControlName="password" autocomplete="new-password" />
+          @if (form.get('password')?.hasError('minlength')) {
+            <mat-error>6 caractères minimum</mat-error>
+          }
+        </mat-form-field>
+
+        @if (error()) {
+          <p class="error-msg">{{ error() }}</p>
+        }
+
+        <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
+          @if (loading()) { <mat-spinner diameter="20" /> }
+          @else { Créer mon compte }
+        </button>
+      </form>
+    }
+
+  </div>
+</div>
