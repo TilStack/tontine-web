@@ -74,11 +74,16 @@ service cloud.firestore {
         }
       }
 
-      // Caisse (stub)
-      match /caisse/{transactionId} {
-        allow read: if inDept(deptId) || isSuperAdmin();
-        allow write: if (inDept(deptId) && getUserRole(deptId) in ['admin', 'bureau'])
-                     || isSuperAdmin();
+      // Caisse commune — solde doc, Admin SDK writes only
+      match /caisse {
+        allow read: if inDept(deptId) && getUserRole(deptId) in ["admin", "bureau"];
+        allow write: if false;
+      }
+
+      // Transactions manuelles — Admin SDK writes only
+      match /transactions/{txId} {
+        allow read: if inDept(deptId) && getUserRole(deptId) in ["admin", "bureau"];
+        allow write: if false;
       }
     }
 

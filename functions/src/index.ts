@@ -18,3 +18,6 @@ export { closeCycleCron } from './close-cycle-cron.js';
 
 // Notifications module
 export { j5RemindCron } from './j5-reminder-cron.js';
+
+// Caisse module
+export { addTransaction } from './add-transaction.js';
