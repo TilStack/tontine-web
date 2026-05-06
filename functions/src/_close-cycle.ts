@@ -78,6 +78,19 @@ export async function closeCycle(
     }
     txn.update(saisonRef, saisonUpdate);
 
+    // Update caisse: atomically increment solde and totalEntrees
+    const caisseRef = db.doc(`departments/${deptId}/caisse`);
+    txn.set(
+      caisseRef,
+      {
+        solde: admin.firestore.FieldValue.increment(montantCaisse),
+        totalEntrees: admin.firestore.FieldValue.increment(montantCaisse),
+        totalSorties: admin.firestore.FieldValue.increment(0),
+        updatedAt: admin.firestore.FieldValue.serverTimestamp(),
+      },
+      { merge: true }
+    );
+
     return {
       penalizedUids,
       newOrder,
