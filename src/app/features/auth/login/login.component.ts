@@ -6,10 +6,10 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
+import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
@@ -18,10 +18,10 @@ import { AuthService } from '../../../core/services/auth.service';
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatProgressSpinnerModule,
+    MatFormField, MatLabel, MatHint, MatError,
+    MatInput,
+    MatButton,
+    MatProgressSpinner,
   ],
   templateUrl: './login.component.html',
 })

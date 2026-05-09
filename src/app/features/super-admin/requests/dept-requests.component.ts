@@ -1,7 +1,7 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { MatTableModule } from '@angular/material/table';
-import { MatButtonModule } from '@angular/material/button';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow } from '@angular/material/table';
+import { MatButton } from '@angular/material/button';
+import { MatChip, MatChipSet } from '@angular/material/chips';
 import {
   Firestore,
   collection,
@@ -15,7 +15,11 @@ import { DepartmentRequest } from '../../../core/models/department-request.model
 @Component({
   selector: 'app-dept-requests',
   standalone: true,
-  imports: [MatTableModule, MatButtonModule, MatChipsModule],
+  imports: [
+    MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef, MatCellDef, MatRowDef,
+    MatHeaderCell, MatCell, MatHeaderRow, MatRow,
+    MatButton, MatChip, MatChipSet,
+  ],
   template: `
     <h2>Demandes de création de département</h2>
 

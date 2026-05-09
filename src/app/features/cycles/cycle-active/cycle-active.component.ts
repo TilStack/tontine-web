@@ -1,10 +1,10 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { from, of, switchMap, map, combineLatest } from 'rxjs';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCardModule } from '@angular/material/card';
-import { MatChipsModule } from '@angular/material/chips';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatCard, MatCardContent, MatCardHeader, MatCardTitle, MatCardActions } from '@angular/material/card';
+import { MatChip, MatChipSet } from '@angular/material/chips';
 import { RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
 import { AuthService } from '../../../core/services/auth.service';
@@ -19,10 +19,16 @@ import { UserProfile } from '../../../core/models/user.model';
   selector: 'app-cycle-active',
   standalone: true,
   imports: [
-    MatButtonModule,
-    MatProgressSpinnerModule,
-    MatCardModule,
-    MatChipsModule,
+    MatButton,
+    MatIconButton,
+    MatProgressSpinner,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardActions,
+    MatChip,
+    MatChipSet,
     RouterLink,
     DatePipe,
     DecimalPipe,

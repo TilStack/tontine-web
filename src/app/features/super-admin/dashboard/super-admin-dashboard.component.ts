@@ -1,14 +1,14 @@
 import { Component, inject } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatButtonModule } from '@angular/material/button';
+import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+import { MatNavList, MatListItem } from '@angular/material/list';
+import { MatButton } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
 
 @Component({
   selector: 'app-super-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatSidenavModule, MatListModule, MatButtonModule],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatSidenav, MatSidenavContainer, MatSidenavContent, MatNavList, MatListItem, MatButton],
   template: `
     <mat-sidenav-container style="height: 100vh">
       <mat-sidenav mode="side" opened style="width: 200px; padding: 16px">

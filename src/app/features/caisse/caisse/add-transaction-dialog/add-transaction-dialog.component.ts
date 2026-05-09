@@ -1,10 +1,10 @@
 import { Component, inject, Inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogModule, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatSelectModule } from '@angular/material/select';
-import { MatButtonModule } from '@angular/material/button';
+import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { MatButton } from '@angular/material/button';
 import { CaisseService } from '../../../../core/services/caisse.service';
 import { CategorieType } from '../../../../core/models/caisse.model';
 
@@ -17,11 +17,11 @@ export interface AddTransactionDialogData {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatDialogModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatSelectModule,
-    MatButtonModule,
+    MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose,
+    MatFormField, MatLabel, MatHint, MatError,
+    MatInput,
+    MatSelect, MatOption,
+    MatButton,
   ],
   templateUrl: './add-transaction-dialog.component.html',
 })

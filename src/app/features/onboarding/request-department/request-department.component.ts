@@ -6,15 +6,15 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
+import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatButton } from '@angular/material/button';
 import { Firestore, collection, addDoc, serverTimestamp } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-request-department',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, MatFormFieldModule, MatInputModule, MatButtonModule],
+  imports: [ReactiveFormsModule, RouterLink, MatFormField, MatLabel, MatHint, MatError, MatInput, MatButton],
   templateUrl: './request-department.component.html',
 })
 export class RequestDepartmentComponent {

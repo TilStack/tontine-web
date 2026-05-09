@@ -2,13 +2,13 @@ import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MatFormFieldModule } from '@angular/material/form-field';
-import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
-import { MatSelectModule } from '@angular/material/select';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatIconModule } from '@angular/material/icon';
-import { MatListModule } from '@angular/material/list';
+import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import { MatInput } from '@angular/material/input';
+import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatSelect, MatOption } from '@angular/material/select';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatIcon } from '@angular/material/icon';
+import { MatList, MatListItem } from '@angular/material/list';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { SaisonService } from '../../../core/services/saison.service';
@@ -21,13 +21,13 @@ import { SaisonMode } from '../../../core/models/saison.model';
   imports: [
     ReactiveFormsModule,
     DragDropModule,
-    MatFormFieldModule,
-    MatInputModule,
-    MatButtonModule,
-    MatSelectModule,
-    MatProgressSpinnerModule,
-    MatIconModule,
-    MatListModule,
+    MatFormField, MatLabel, MatHint, MatError,
+    MatInput,
+    MatButton, MatIconButton,
+    MatSelect, MatOption,
+    MatProgressSpinner,
+    MatIcon,
+    MatList, MatListItem,
   ],
   templateUrl: './saison-setup.component.html',
 })

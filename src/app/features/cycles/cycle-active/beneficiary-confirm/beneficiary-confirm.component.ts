@@ -1,14 +1,14 @@
 import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
-import { MatButtonModule } from '@angular/material/button';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCardModule } from '@angular/material/card';
+import { MatButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatCard, MatCardContent } from '@angular/material/card';
 import { DecimalPipe } from '@angular/common';
 import { CycleService } from '../../../../core/services/cycle.service';
 
 @Component({
   selector: 'app-beneficiary-confirm',
   standalone: true,
-  imports: [MatButtonModule, MatProgressSpinnerModule, MatCardModule, DecimalPipe],
+  imports: [MatButton, MatProgressSpinner, MatCard, MatCardContent, DecimalPipe],
   templateUrl: './beneficiary-confirm.component.html',
 })
 export class BeneficiaryConfirmComponent {

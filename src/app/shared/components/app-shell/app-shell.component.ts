@@ -6,11 +6,10 @@ import {
   computed,
 } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatSidenavModule } from '@angular/material/sidenav';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatToolbarModule } from '@angular/material/toolbar';
-import { MatButtonModule } from '@angular/material/button';
+import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+import { MatNavList, MatListItem } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { UserProfile, UserRole } from '../../../core/models/user.model';
@@ -40,11 +39,13 @@ const NAV_ITEMS: NavItem[] = [
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    MatSidenavModule,
-    MatListModule,
-    MatIconModule,
-    MatToolbarModule,
-    MatButtonModule,
+    MatSidenav,
+    MatSidenavContainer,
+    MatSidenavContent,
+    MatNavList,
+    MatListItem,
+    MatIcon,
+    MatIconButton,
     NotificationBellComponent,
   ],
   templateUrl: './app-shell.component.html',

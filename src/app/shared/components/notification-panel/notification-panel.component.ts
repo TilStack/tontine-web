@@ -1,9 +1,9 @@
 import { Component, Input, inject } from '@angular/core';
 import { Router } from '@angular/router';
-import { MatListModule } from '@angular/material/list';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatDividerModule } from '@angular/material/divider';
+import { MatList, MatListItem } from '@angular/material/list';
+import { MatIcon } from '@angular/material/icon';
+import { MatButton } from '@angular/material/button';
+import { MatDivider } from '@angular/material/divider';
 import { NgClass } from '@angular/common';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationDoc, NotificationType } from '../../../core/models/notification.model';
@@ -21,7 +21,7 @@ const NOTIFICATION_ROUTES: Record<NotificationType, string> = {
 @Component({
   selector: 'app-notification-panel',
   standalone: true,
-  imports: [MatListModule, MatIconModule, MatButtonModule, MatDividerModule, NgClass],
+  imports: [MatList, MatListItem, MatIcon, MatButton, MatDivider, NgClass],
   templateUrl: './notification-panel.component.html',
 })
 export class NotificationPanelComponent {

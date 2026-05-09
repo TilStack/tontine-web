@@ -2,10 +2,10 @@ import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { from, of, switchMap, combineLatest, map } from 'rxjs';
 import { DatePipe, DecimalPipe } from '@angular/common';
-import { MatTableModule } from '@angular/material/table';
-import { MatIconModule } from '@angular/material/icon';
-import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
-import { MatCardModule } from '@angular/material/card';
+import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow } from '@angular/material/table';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
+import { MatCard, MatCardContent } from '@angular/material/card';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { SaisonService } from '../../../core/services/saison.service';
@@ -15,7 +15,12 @@ import { UserProfile } from '../../../core/models/user.model';
 @Component({
   selector: 'app-cycle-history',
   standalone: true,
-  imports: [MatTableModule, MatIconModule, MatProgressSpinnerModule, MatCardModule, DatePipe, DecimalPipe],
+  imports: [
+    MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef, MatCellDef, MatRowDef,
+    MatHeaderCell, MatCell, MatHeaderRow, MatRow,
+    MatIcon, MatProgressSpinner, MatCard, MatCardContent,
+    DatePipe, DecimalPipe,
+  ],
   templateUrl: './cycle-history.component.html',
 })
 export class CycleHistoryComponent {

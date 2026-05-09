@@ -6,10 +6,10 @@ import {
   signal,
   computed,
 } from '@angular/core';
-import { MatIconModule } from '@angular/material/icon';
-import { MatButtonModule } from '@angular/material/button';
-import { MatBadgeModule } from '@angular/material/badge';
-import { MatMenuModule } from '@angular/material/menu';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { MatBadge } from '@angular/material/badge';
+import { MatMenu, MatMenuTrigger } from '@angular/material/menu';
 import { NotificationService } from '../../../core/services/notification.service';
 import { NotificationPanelComponent } from '../notification-panel/notification-panel.component';
 import { NotificationDoc } from '../../../core/models/notification.model';
@@ -18,10 +18,11 @@ import { NotificationDoc } from '../../../core/models/notification.model';
   selector: 'app-notification-bell',
   standalone: true,
   imports: [
-    MatIconModule,
-    MatButtonModule,
-    MatBadgeModule,
-    MatMenuModule,
+    MatIcon,
+    MatIconButton,
+    MatBadge,
+    MatMenu,
+    MatMenuTrigger,
     NotificationPanelComponent,
   ],
   templateUrl: './notification-bell.component.html',
