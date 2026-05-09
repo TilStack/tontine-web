@@ -1,5 +1,16 @@
 import { Component, OnInit, inject, signal } from '@angular/core';
-import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow } from '@angular/material/table';
+import {
+  MatTable,
+  MatColumnDef,
+  MatHeaderCellDef,
+  MatHeaderRowDef,
+  MatCellDef,
+  MatRowDef,
+  MatHeaderCell,
+  MatCell,
+  MatHeaderRow,
+  MatRow,
+} from '@angular/material/table';
 import { MatButton } from '@angular/material/button';
 import { MatChip, MatChipSet } from '@angular/material/chips';
 import {
@@ -16,9 +27,17 @@ import { DepartmentRequest } from '../../../core/models/department-request.model
   selector: 'app-dept-requests',
   standalone: true,
   imports: [
-    MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef, MatCellDef, MatRowDef,
-    MatHeaderCell, MatCell, MatHeaderRow, MatRow,
-    MatButton, MatChip, MatChipSet,
+    MatTable,
+    MatColumnDef,
+    MatHeaderCellDef,
+    MatHeaderRowDef,
+    MatCellDef,
+    MatRowDef,
+    MatHeaderCell,
+    MatCell,
+    MatHeaderRow,
+    MatRow,
+    MatButton,
   ],
   template: `
     <h2>Demandes de création de département</h2>
@@ -71,7 +90,7 @@ export class DeptRequestsComponent implements OnInit {
       snap.docs.map((d) => {
         const data = d.data() as Omit<DepartmentRequest, 'id'>;
         return { id: d.id, ...data };
-      })
+      }),
     );
     this.loading.set(false);
   }
@@ -79,7 +98,7 @@ export class DeptRequestsComponent implements OnInit {
   async approve(requestId: string): Promise<void> {
     const fn = httpsCallable<{ requestId: string }, { deptId: string }>(
       this.functions,
-      'provisionDepartment'
+      'provisionDepartment',
     );
     await fn({ requestId });
     this.requests.update((list) => list.filter((r) => r.id !== requestId));

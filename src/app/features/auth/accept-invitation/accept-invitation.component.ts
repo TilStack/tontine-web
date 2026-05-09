@@ -6,7 +6,7 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
@@ -23,7 +23,9 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
   imports: [
     ReactiveFormsModule,
     RouterLink,
-    MatFormField, MatLabel, MatHint, MatError,
+    MatFormField,
+    MatLabel,
+    MatError,
     MatInput,
     MatButton,
     MatProgressSpinner,
@@ -77,7 +79,13 @@ export class AcceptInvitationComponent implements OnInit {
   }
 
   async submit(): Promise<void> {
-    if (this.form.invalid || !this.invitationEmail() || !this.deptId() || !this.token()) return;
+    if (
+      this.form.invalid ||
+      !this.invitationEmail() ||
+      !this.deptId() ||
+      !this.token()
+    )
+      return;
     this.loading.set(true);
     this.error.set(null);
 
@@ -85,20 +93,24 @@ export class AcceptInvitationComponent implements OnInit {
       const { user } = await createUserWithEmailAndPassword(
         this.auth,
         this.invitationEmail()!,
-        this.form.value.password as string
+        this.form.value.password as string,
       );
-      await updateProfile(user, { displayName: this.form.value.displayName as string });
+      await updateProfile(user, {
+        displayName: this.form.value.displayName as string,
+      });
 
       const acceptFn = httpsCallable<{ deptId: string; token: string }, void>(
         this.functions,
-        'acceptInvitation'
+        'acceptInvitation',
       );
       await acceptFn({ deptId: this.deptId()!, token: this.token()! });
 
       await user.getIdToken(true);
       await this.router.navigate(['/app']);
     } catch {
-      this.error.set('Une erreur est survenue. Vérifiez que le lien est valide.');
+      this.error.set(
+        'Une erreur est survenue. Vérifiez que le lien est valide.',
+      );
     } finally {
       this.loading.set(false);
     }

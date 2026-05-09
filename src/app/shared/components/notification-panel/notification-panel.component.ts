@@ -4,9 +4,11 @@ import { MatList, MatListItem } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
 import { MatButton } from '@angular/material/button';
 import { MatDivider } from '@angular/material/divider';
-import { NgClass } from '@angular/common';
 import { NotificationService } from '../../../core/services/notification.service';
-import { NotificationDoc, NotificationType } from '../../../core/models/notification.model';
+import {
+  NotificationDoc,
+  NotificationType,
+} from '../../../core/models/notification.model';
 
 const NOTIFICATION_ROUTES: Record<NotificationType, string> = {
   rappel_j5: '/app/cycles',
@@ -21,7 +23,7 @@ const NOTIFICATION_ROUTES: Record<NotificationType, string> = {
 @Component({
   selector: 'app-notification-panel',
   standalone: true,
-  imports: [MatList, MatListItem, MatIcon, MatButton, MatDivider, NgClass],
+  imports: [MatList, MatListItem, MatIcon, MatButton, MatDivider],
   templateUrl: './notification-panel.component.html',
 })
 export class NotificationPanelComponent {

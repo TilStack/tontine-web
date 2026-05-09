@@ -1,7 +1,14 @@
 import { Component, inject, Inject, signal } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
-import { MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
-import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import {
+  MatDialogTitle,
+  MatDialogContent,
+  MatDialogActions,
+  MatDialogClose,
+  MatDialogRef,
+  MAT_DIALOG_DATA,
+} from '@angular/material/dialog';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatSelect, MatOption } from '@angular/material/select';
 import { MatButton } from '@angular/material/button';
@@ -17,10 +24,16 @@ export interface AddTransactionDialogData {
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    MatDialogTitle, MatDialogContent, MatDialogActions, MatDialogClose,
-    MatFormField, MatLabel, MatHint, MatError,
+    MatDialogTitle,
+    MatDialogContent,
+    MatDialogActions,
+    MatDialogClose,
+    MatFormField,
+    MatLabel,
+    MatError,
     MatInput,
-    MatSelect, MatOption,
+    MatSelect,
+    MatOption,
     MatButton,
   ],
   templateUrl: './add-transaction-dialog.component.html',
@@ -67,7 +80,9 @@ export class AddTransactionDialogComponent {
       this.dialogRef.close(true);
     } catch (err: any) {
       if (err?.code === 'functions/failed-precondition') {
-        this.error.set('Solde insuffisant — le montant dépasse le solde disponible.');
+        this.error.set(
+          'Solde insuffisant — le montant dépasse le solde disponible.',
+        );
       } else {
         this.error.set('Une erreur est survenue. Veuillez réessayer.');
       }

@@ -8,7 +8,7 @@ import {
   AbstractControl,
   ValidationErrors,
 } from '@angular/forms';
-import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { Auth, updatePassword } from '@angular/fire/auth';
@@ -24,7 +24,14 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
 @Component({
   selector: 'app-reset-password',
   standalone: true,
-  imports: [ReactiveFormsModule, MatFormField, MatLabel, MatHint, MatError, MatInput, MatButton],
+  imports: [
+    ReactiveFormsModule,
+    MatFormField,
+    MatLabel,
+    MatError,
+    MatInput,
+    MatButton,
+  ],
   templateUrl: './reset-password.component.html',
 })
 export class ResetPasswordComponent {
@@ -39,7 +46,7 @@ export class ResetPasswordComponent {
       password: ['', [Validators.required, Validators.minLength(6)]],
       confirmPassword: ['', Validators.required],
     },
-    { validators: passwordsMatch }
+    { validators: passwordsMatch },
   );
 
   loading = signal(false);
@@ -51,20 +58,25 @@ export class ResetPasswordComponent {
     this.error.set(null);
 
     try {
-      await updatePassword(this.auth.currentUser, this.form.value.password as string);
+      await updatePassword(
+        this.auth.currentUser,
+        this.form.value.password as string,
+      );
 
       const claims = await this.authService.getClaims();
       if (claims?.deptId) {
         await this.userService.setMustResetPassword(
           claims.deptId,
           this.auth.currentUser.uid,
-          false
+          false,
         );
       }
 
       await this.router.navigate(['/app']);
     } catch {
-      this.error.set('Impossible de changer le mot de passe. Reconnectez-vous et réessayez.');
+      this.error.set(
+        'Impossible de changer le mot de passe. Reconnectez-vous et réessayez.',
+      );
     } finally {
       this.loading.set(false);
     }

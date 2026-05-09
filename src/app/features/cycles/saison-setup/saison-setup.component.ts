@@ -1,10 +1,19 @@
 import { Component, OnInit, inject, signal, computed } from '@angular/core';
 import { Router } from '@angular/router';
-import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
-import { CdkDragDrop, DragDropModule, moveItemInArray } from '@angular/cdk/drag-drop';
-import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import {
+  FormBuilder,
+  FormGroup,
+  Validators,
+  ReactiveFormsModule,
+} from '@angular/forms';
+import {
+  CdkDragDrop,
+  DragDropModule,
+  moveItemInArray,
+} from '@angular/cdk/drag-drop';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatSelect, MatOption } from '@angular/material/select';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
@@ -21,13 +30,16 @@ import { SaisonMode } from '../../../core/models/saison.model';
   imports: [
     ReactiveFormsModule,
     DragDropModule,
-    MatFormField, MatLabel, MatHint, MatError,
+    MatFormField,
+    MatLabel,
     MatInput,
-    MatButton, MatIconButton,
-    MatSelect, MatOption,
+    MatButton,
+    MatSelect,
+    MatOption,
     MatProgressSpinner,
     MatIcon,
-    MatList, MatListItem,
+    MatList,
+    MatListItem,
   ],
   templateUrl: './saison-setup.component.html',
 })
@@ -90,7 +102,11 @@ export class SaisonSetupComponent implements OnInit {
         ...this.reorderableMembers().map((m) => m.uid),
       ];
 
-      await this.saisonService.createSaison({ mode, memberOrder, montantCotisation });
+      await this.saisonService.createSaison({
+        mode,
+        memberOrder,
+        montantCotisation,
+      });
       await this.router.navigate(['/app/cycles']);
     } catch (err: any) {
       this.error.set(err?.message ?? 'Une erreur est survenue.');

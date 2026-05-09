@@ -1,9 +1,16 @@
 import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { from, of, switchMap, map, combineLatest } from 'rxjs';
-import { MatButton, MatIconButton } from '@angular/material/button';
+import { MatButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatCard, MatCardContent, MatCardHeader, MatCardTitle, MatCardActions } from '@angular/material/card';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardHeader,
+  MatCardTitle,
+  MatCardActions,
+  MatCardSubtitle,
+} from '@angular/material/card';
 import { MatChip, MatChipSet } from '@angular/material/chips';
 import { RouterLink } from '@angular/router';
 import { DatePipe, DecimalPipe } from '@angular/common';
@@ -20,12 +27,12 @@ import { UserProfile } from '../../../core/models/user.model';
   standalone: true,
   imports: [
     MatButton,
-    MatIconButton,
     MatProgressSpinner,
     MatCard,
     MatCardContent,
     MatCardHeader,
     MatCardTitle,
+    MatCardSubtitle,
     MatCardActions,
     MatChip,
     MatChipSet,
@@ -58,21 +65,38 @@ export class CycleActiveComponent {
         from(this.auth.getClaims()).pipe(
           switchMap((c) =>
             c?.deptId && this.auth.currentUser?.uid
-              ? this.userService.watchProfile(c.deptId, this.auth.currentUser.uid)
-              : of(undefined)
-          )
+              ? this.userService.watchProfile(
+                  c.deptId,
+                  this.auth.currentUser.uid,
+                )
+              : of(undefined),
+          ),
         ),
       ]).pipe(
         switchMap(([saison, members, myProfile]) => {
           if (!saison) {
-            return of({ deptId, saison: null, cycleData: null, members, myProfile });
+            return of({
+              deptId,
+              saison: null,
+              cycleData: null,
+              members,
+              myProfile,
+            });
           }
           return this.cycleService
             .watchCurrentCycle(deptId, saison.id, saison.currentCycleIndex)
-            .pipe(map((cycleData) => ({ deptId, saison, cycleData, members, myProfile })));
-        })
+            .pipe(
+              map((cycleData) => ({
+                deptId,
+                saison,
+                cycleData,
+                members,
+                myProfile,
+              })),
+            );
+        }),
       );
-    })
+    }),
   );
 
   ctx = toSignal(this.context$);
@@ -153,13 +177,18 @@ export class CycleActiveComponent {
         cycleId: ctx.cycleData.cycle.id,
       });
     } catch (err: any) {
-      this.actionError.set(err?.message ?? "Erreur lors de l'ouverture du cycle.");
+      this.actionError.set(
+        err?.message ?? "Erreur lors de l'ouverture du cycle.",
+      );
     } finally {
       this.actionLoading.set(false);
     }
   }
 
   getMemberName(uid: string): string {
-    return this.ctx()?.members?.find((m: UserProfile) => m.uid === uid)?.displayName ?? uid;
+    return (
+      this.ctx()?.members?.find((m: UserProfile) => m.uid === uid)
+        ?.displayName ?? uid
+    );
   }
 }

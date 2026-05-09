@@ -6,15 +6,27 @@ import {
   Validators,
   ReactiveFormsModule,
 } from '@angular/forms';
-import { MatFormField, MatLabel, MatHint, MatError } from '@angular/material/form-field';
+import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
-import { Firestore, collection, addDoc, serverTimestamp } from '@angular/fire/firestore';
+import {
+  Firestore,
+  collection,
+  addDoc,
+  serverTimestamp,
+} from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-request-department',
   standalone: true,
-  imports: [ReactiveFormsModule, RouterLink, MatFormField, MatLabel, MatHint, MatError, MatInput, MatButton],
+  imports: [
+    ReactiveFormsModule,
+    RouterLink,
+    MatFormField,
+    MatLabel,
+    MatInput,
+    MatButton,
+  ],
   templateUrl: './request-department.component.html',
 })
 export class RequestDepartmentComponent {
@@ -46,7 +58,7 @@ export class RequestDepartmentComponent {
       });
       this.submitted.set(true);
     } catch {
-      this.error.set('Erreur lors de l\'envoi. Réessayez.');
+      this.error.set("Erreur lors de l'envoi. Réessayez.");
     } finally {
       this.loading.set(false);
     }

@@ -1,14 +1,36 @@
-import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
+import {
+  Component,
+  Input,
+  Output,
+  EventEmitter,
+  signal,
+  inject,
+} from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatCard, MatCardContent } from '@angular/material/card';
+import {
+  MatCard,
+  MatCardContent,
+  MatCardHeader,
+  MatCardTitle,
+  MatCardActions,
+} from '@angular/material/card';
 import { DecimalPipe } from '@angular/common';
 import { CycleService } from '../../../../core/services/cycle.service';
 
 @Component({
   selector: 'app-beneficiary-confirm',
   standalone: true,
-  imports: [MatButton, MatProgressSpinner, MatCard, MatCardContent, DecimalPipe],
+  imports: [
+    MatButton,
+    MatProgressSpinner,
+    MatCard,
+    MatCardContent,
+    MatCardHeader,
+    MatCardTitle,
+    MatCardActions,
+    DecimalPipe,
+  ],
   templateUrl: './beneficiary-confirm.component.html',
 })
 export class BeneficiaryConfirmComponent {
@@ -27,7 +49,10 @@ export class BeneficiaryConfirmComponent {
     this.loading.set(true);
     this.error.set(null);
     try {
-      await this.cycleService.confirmReception({ saisonId: this.saisonId, cycleId: this.cycleId });
+      await this.cycleService.confirmReception({
+        saisonId: this.saisonId,
+        cycleId: this.cycleId,
+      });
       this.confirmed.emit();
     } catch (err: any) {
       this.error.set(err?.message ?? 'Erreur lors de la confirmation.');

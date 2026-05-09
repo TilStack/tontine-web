@@ -1,12 +1,11 @@
 <div class="cycle-active-container">
-
   @if (!ctx()) {
     <mat-spinner />
   } @else if (!ctx()!.saison) {
     <mat-card>
       <mat-card-content>
         <p>Aucune saison en cours.</p>
-        @if (ctx()!.myProfile?.role === 'admin') {
+        @if (ctx()!.myProfile?.role === "admin") {
           <a mat-raised-button color="primary" routerLink="/app/cycles/setup">
             Créer une nouvelle saison
           </a>
@@ -14,11 +13,13 @@
       </mat-card-content>
     </mat-card>
   } @else {
-
     @let saison = ctx()!.saison!;
     @let cycleData = ctx()!.cycleData;
 
-    <h2>Saison en cours — {{ saison.mode === 'lottery' ? 'Tirage au sort' : 'Rotation fixe' }}</h2>
+    <h2>
+      Saison en cours —
+      {{ saison.mode === "lottery" ? "Tirage au sort" : "Rotation fixe" }}
+    </h2>
 
     @if (!cycleData) {
       <mat-spinner />
@@ -35,19 +36,27 @@
           </mat-card-subtitle>
         </mat-card-header>
         <mat-card-content>
-          <p>Deadline : {{ cycle.deadline.toDate() | date:'d MMMM yyyy' }}</p>
-          <p>Cotisations : {{ cycle.totalPaid }} / {{ saison.totalCycles }} membres</p>
+          <p>Deadline : {{ cycle.deadline.toDate() | date: "d MMMM yyyy" }}</p>
+          <p>
+            Cotisations : {{ cycle.totalPaid }} /
+            {{ saison.totalCycles }} membres
+          </p>
           <p>Montant versé : {{ cycle.montantVerse | number }} FCFA</p>
 
           <mat-chip-set>
-            <mat-chip [color]="cycle.status === 'open' ? 'primary' : 'warn'" highlighted>
-              {{ cycle.status === 'open' ? 'Ouvert' : 'Fermé' }}
+            <mat-chip
+              [color]="cycle.status === 'open' ? 'primary' : 'warn'"
+              highlighted
+            >
+              {{ cycle.status === "open" ? "Ouvert" : "Fermé" }}
             </mat-chip>
-            @if (cycle.status === 'closed' && cycle.closedBy) {
+            @if (cycle.status === "closed" && cycle.closedBy) {
               <mat-chip>Clôturé par {{ cycle.closedBy }}</mat-chip>
             }
             @if (cycle.confirmedAt) {
-              <mat-chip color="accent" highlighted>Réception confirmée</mat-chip>
+              <mat-chip color="accent" highlighted
+                >Réception confirmée</mat-chip
+              >
             }
           </mat-chip-set>
         </mat-card-content>
@@ -58,18 +67,28 @@
           }
 
           @if (canForceClose()) {
-            <button mat-stroked-button color="warn" [disabled]="actionLoading()" (click)="onForceClose()">
+            <button
+              mat-stroked-button
+              color="warn"
+              [disabled]="actionLoading()"
+              (click)="onForceClose()"
+            >
               Forcer la clôture
             </button>
           }
 
           @if (canOpenNext()) {
-            <button mat-raised-button color="primary" [disabled]="actionLoading()" (click)="onOpenNext()">
+            <button
+              mat-raised-button
+              color="primary"
+              [disabled]="actionLoading()"
+              (click)="onOpenNext()"
+            >
               Ouvrir le cycle suivant
             </button>
           }
 
-          @if (ctx()!.myProfile?.role === 'admin') {
+          @if (ctx()!.myProfile?.role === "admin") {
             <a mat-button routerLink="/app/cycles/setup">Nouvelle saison</a>
           }
         </mat-card-actions>
@@ -85,7 +104,7 @@
 
       <app-cotisation-checklist
         [cotisations]="cycleData.cotisations"
-        [members]="ctx()!.members ?? []"
+        [members]="ctx()!.members"
         [canMarkPaid]="canMarkPaid()"
         [markingUid]="markingUid()"
         (markPaid)="onMarkPaid($event)"
