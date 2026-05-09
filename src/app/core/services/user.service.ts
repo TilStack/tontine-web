@@ -9,12 +9,14 @@ import {
   collectionData,
   serverTimestamp,
 } from '@angular/fire/firestore';
+import { Functions, httpsCallable } from '@angular/fire/functions';
 import { Observable } from 'rxjs';
 import { UserProfile, UserRole } from '../models/user.model';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private firestore = inject(Firestore);
+  private functions = inject(Functions);
 
   watchProfile(deptId: string, uid: string): Observable<UserProfile | undefined> {
     const ref = doc(this.firestore, `departments/${deptId}/users/${uid}`);
@@ -42,5 +44,15 @@ export class UserService {
   async setMustResetPassword(deptId: string, uid: string, value: boolean): Promise<void> {
     const ref = doc(this.firestore, `departments/${deptId}/users/${uid}`);
     await updateDoc(ref, { mustResetPassword: value });
+  }
+
+  sendInvitation(payload: { deptId: string; email: string; role: UserRole }): Promise<void> {
+    const fn = httpsCallable(this.functions, 'sendInvitation');
+    return fn(payload).then(() => undefined);
+  }
+
+  updateUserRole(payload: { deptId: string; userId: string; newRole: UserRole }): Promise<void> {
+    const fn = httpsCallable(this.functions, 'updateUserRole');
+    return fn(payload).then(() => undefined);
   }
 }
