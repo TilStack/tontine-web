@@ -1,1 +1,86 @@
-/* You can add global styles to this file, and also import other style files */
+@use '@angular/material' as mat;
+
+// Design system partials
+// Les chemins sont relatifs à src/ grâce à stylePreprocessorOptions.includePaths
+@use './app/core/styles/tokens';
+@use './app/core/styles/typography';
+@use './app/core/styles/utilities';
+
+// Thème Angular Material M3
+// mat.$violet-palette → indigo — composants primaires (boutons, checkboxes, progress)
+// mat.$orange-palette → ambre  — composants tertiaires
+html {
+  @include mat.theme((
+    color: (
+      primary: mat.$violet-palette,
+      tertiary: mat.$orange-palette,
+    ),
+    typography: 'Plus Jakarta Sans',
+    density: 0,
+  ));
+}
+
+// Reset global
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body {
+  height: 100%;
+  font-family: var(--font-family);
+  font-size: var(--font-size-base);
+  color: var(--color-text-primary);
+  background: var(--color-background);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+// Overrides Material : typographie + border-radius cohérents avec le design system
+.mat-mdc-button,
+.mat-mdc-raised-button,
+.mat-mdc-outlined-button,
+.mat-mdc-unelevated-button {
+  font-family: var(--font-family) !important;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+  border-radius: var(--radius-md) !important;
+}
+
+.mat-mdc-card {
+  border-radius: var(--radius-lg) !important;
+  box-shadow: var(--shadow-sm) !important;
+}
+
+.mat-mdc-form-field {
+  .mdc-notched-outline__leading {
+    border-radius: var(--radius-md) 0 0 var(--radius-md) !important;
+  }
+
+  .mdc-notched-outline__trailing {
+    border-radius: 0 var(--radius-md) var(--radius-md) 0 !important;
+  }
+}
+
+.mat-mdc-dialog-container .mdc-dialog__surface {
+  border-radius: var(--radius-xl) !important;
+}
+
+// Scrollbar discrète sur les navigateurs Webkit
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--color-border);
+  border-radius: var(--radius-full);
+}
