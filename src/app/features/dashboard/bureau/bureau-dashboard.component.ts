@@ -11,7 +11,6 @@ import { CotisationsListCardComponent } from '../shared/cotisations-list-card/co
 import { CaisseSummaryCardComponent } from '../shared/caisse-summary-card/caisse-summary-card.component';
 import { BeneficiaireCardComponent } from '../shared/beneficiaire-card/beneficiaire-card.component';
 import { CotisationStatusCardComponent } from '../shared/cotisation-status-card/cotisation-status-card.component';
-import { ProgressionCardComponent } from '../shared/progression-card/progression-card.component';
 import { MonRangCardComponent } from '../shared/mon-rang-card/mon-rang-card.component';
 import { HistoryCardComponent } from '../shared/history-card/history-card.component';
 
@@ -24,7 +23,6 @@ import { HistoryCardComponent } from '../shared/history-card/history-card.compon
     CaisseSummaryCardComponent,
     BeneficiaireCardComponent,
     CotisationStatusCardComponent,
-    ProgressionCardComponent,
     MonRangCardComponent,
     HistoryCardComponent,
   ],

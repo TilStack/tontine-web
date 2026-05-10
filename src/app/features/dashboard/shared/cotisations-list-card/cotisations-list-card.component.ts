@@ -1,5 +1,5 @@
 import { Component, Input, Output, EventEmitter } from '@angular/core';
-import { DatePipe } from '@angular/common';
+
 import { MatCard, MatCardContent } from '@angular/material/card';
 import {
   MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef,
@@ -24,7 +24,7 @@ interface Row {
     MatCard, MatCardContent,
     MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef,
     MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow,
-    MatButton, MatProgressSpinner, MatChip, MatChipSet, DatePipe,
+    MatButton, MatProgressSpinner, MatChip, MatChipSet,
   ],
   template: `
     <mat-card>

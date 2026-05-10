@@ -25,7 +25,7 @@ import { AddTransactionDialogComponent } from '../../../caisse/caisse/add-transa
                 {{ t.type === 'credit' ? '+' : '-' }}{{ t.montant | number }} FCFA
               </span>
               <span style="color:#999;font-size:.8rem">
-                {{ t.createdAt?.toDate() | date:'dd/MM' }}
+                {{ t.createdAt.toDate() | date:'dd/MM' }}
               </span>
             </div>
           }
