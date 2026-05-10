@@ -1,0 +1,58 @@
+:root {
+  /* Couleurs */
+  --color-primary:        #1e1b4b; /* indigo dark — sidebar, headers */
+  --color-primary-light:  #3730a3; /* indigo medium — hover states */
+  --color-accent:         #f59e0b; /* ambre — CTA principaux */
+  --color-accent-hover:   #d97706; /* ambre foncé — hover CTA */
+  --color-success:        #10b981; /* vert — payé, confirmé */
+  --color-warning:        #f97316; /* orange — retard, alerte */
+  --color-error:          #ef4444; /* rouge — pénalité, erreur */
+  --color-surface:        #ffffff; /* fond cartes */
+  --color-background:     #f8fafc; /* fond général app */
+  --color-text-primary:   #1e293b; /* texte principal */
+  --color-text-secondary: #64748b; /* texte secondaire, labels */
+  --color-border:         #e2e8f0; /* bordures, dividers */
+
+  /* Border radius */
+  --radius-sm:   6px;
+  --radius-md:   8px;
+  --radius-lg:   12px;
+  --radius-xl:   16px;
+  --radius-full: 9999px;
+
+  /* Spacing (base 4px) */
+  --space-1:   4px;
+  --space-2:   8px;
+  --space-3:  12px;
+  --space-4:  16px;
+  --space-6:  24px;
+  --space-8:  32px;
+  --space-12: 48px;
+  --space-16: 64px;
+
+  /* Typographie */
+  --font-family:    'Plus Jakarta Sans', sans-serif;
+  --font-size-xs:   12px;
+  --font-size-sm:   14px;
+  --font-size-base: 16px;
+  --font-size-lg:   18px;
+  --font-size-xl:   22px;
+  --font-size-2xl:  28px;
+  --font-size-3xl:  36px;
+
+  /* Ombres */
+  --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.08);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.10);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.12);
+
+  /* Sidebar */
+  --sidebar-width:     240px;
+  --sidebar-collapsed: 64px;
+  --sidebar-bg:        #1e1b4b;
+  --sidebar-text:      #e2e8f0;
+  --sidebar-accent:    #f59e0b;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+}
