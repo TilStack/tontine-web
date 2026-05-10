@@ -48,9 +48,9 @@
   /* Sidebar */
   --sidebar-width:     240px;
   --sidebar-collapsed: 64px;
-  --sidebar-bg:        #1e1b4b;
+  --sidebar-bg:        var(--color-primary);
   --sidebar-text:      #e2e8f0;
-  --sidebar-accent:    #f59e0b;
+  --sidebar-accent:    var(--color-accent);
 
   /* Transitions */
   --transition-fast: 150ms ease;
