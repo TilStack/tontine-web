@@ -1,44 +1,50 @@
-<div class="invitation-wrapper">
-  <div class="invitation-card">
+<app-auth-layout>
+  @if (tokenValid() === null) {
+    <p class="body-text loading-state">Vérification du lien…</p>
+  }
 
-    @if (tokenValid() === null) {
-      <p>Vérification du lien…</p>
-    }
+  @if (tokenValid() === false) {
+    <h3 class="h3">Lien invalide</h3>
+    <p class="body-text page-intro">
+      Ce lien d'invitation est expiré ou invalide. Contactez votre administrateur.
+    </p>
+    <a class="link-primary" routerLink="/auth/login">Retour à la connexion</a>
+  }
 
-    @if (tokenValid() === false) {
-      <h2>Lien invalide ou expiré</h2>
-      <p>Ce lien d'invitation n'est plus valide. Contactez votre administrateur.</p>
-      <a routerLink="/auth/login">Retour à la connexion</a>
-    }
+  @if (tokenValid() === true) {
+    <h3 class="h3">Créer votre compte</h3>
+    <p class="body-text page-intro">
+      Invitation envoyée à <strong>{{ invitationEmail() }}</strong>.
+    </p>
 
-    @if (tokenValid() === true) {
-      <h2>Créez votre compte</h2>
-      <p>Invitation pour : <strong>{{ invitationEmail() }}</strong></p>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Nom complet</mat-label>
+        <input matInput formControlName="displayName" autocomplete="name" />
+      </mat-form-field>
 
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <mat-form-field appearance="outline">
-          <mat-label>Votre nom complet</mat-label>
-          <input matInput formControlName="displayName" autocomplete="name" />
-        </mat-form-field>
-
-        <mat-form-field appearance="outline">
-          <mat-label>Mot de passe</mat-label>
-          <input matInput type="password" formControlName="password" autocomplete="new-password" />
-          @if (form.get('password')?.hasError('minlength')) {
-            <mat-error>6 caractères minimum</mat-error>
-          }
-        </mat-form-field>
-
-        @if (error()) {
-          <p class="error-msg">{{ error() }}</p>
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput type="password" formControlName="password" autocomplete="new-password" />
+        @if (form.get('password')?.hasError('minlength')) {
+          <mat-error>6 caractères minimum</mat-error>
         }
+      </mat-form-field>
 
-        <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
-          @if (loading()) { <mat-spinner diameter="20" /> }
-          @else { Créer mon compte }
+      @if (error()) {
+        <div class="alert-error" role="alert">{{ error() }}</div>
+      }
+
+      <div class="form-footer">
+        <button class="btn-primary" type="submit" [disabled]="loading()" [attr.aria-label]="loading() ? 'Création en cours' : 'Créer mon compte'">
+          @if (loading()) {
+            <mat-progress-spinner diameter="20" mode="indeterminate" />
+          } @else {
+            Créer mon compte
+          }
         </button>
-      </form>
-    }
-
-  </div>
-</div>
+        <a class="link-primary" routerLink="/auth/login">Retour à la connexion</a>
+      </div>
+    </form>
+  }
+</app-auth-layout>

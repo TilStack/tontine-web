@@ -16,6 +16,7 @@ import {
   updateProfile,
 } from '@angular/fire/auth';
 import { Functions, httpsCallable } from '@angular/fire/functions';
+import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 
 @Component({
   selector: 'app-accept-invitation',
@@ -29,8 +30,10 @@ import { Functions, httpsCallable } from '@angular/fire/functions';
     MatInput,
     MatButton,
     MatProgressSpinner,
+    AuthLayoutComponent,
   ],
   templateUrl: './accept-invitation.component.html',
+  styleUrl: './accept-invitation.component.scss',
 })
 export class AcceptInvitationComponent implements OnInit {
   private route = inject(ActivatedRoute);
