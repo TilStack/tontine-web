@@ -1,0 +1,11 @@
+<mat-card>
+  <mat-card-content>
+    <h3 class="progression-card__title">Progression collective</h3>
+    <p class="progression-card__count">{{ paidCount }} / {{ totalCount }} membres ont cotisé</p>
+    <mat-progress-bar class="progression-card__bar" mode="determinate" [value]="progressPct" />
+    <div class="progression-card__amounts">
+      <span class="progression-card__amounts-highlight">{{ paidCount * montantCotisation | fcfa }}</span>
+      <span>sur {{ totalCount * montantCotisation | fcfa }}</span>
+    </div>
+  </mat-card-content>
+</mat-card>

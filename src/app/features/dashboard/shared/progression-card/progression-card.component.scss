@@ -1,0 +1,32 @@
+@use 'app/core/styles/mixins' as m;
+
+:host { display: block; }
+
+.progression-card__title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.progression-card__count {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-bottom: var(--space-2);
+}
+
+.progression-card__bar {
+  margin: var(--space-3) 0;
+}
+
+.progression-card__amounts {
+  @include m.flex-between;
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin-top: var(--space-2);
+}
+
+.progression-card__amounts-highlight {
+  color: var(--color-success);
+  font-weight: 600;
+}
