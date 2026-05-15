@@ -1,0 +1,17 @@
+<mat-card>
+  <mat-card-content>
+    <h3 class="status-card__title">Ma cotisation</h3>
+
+    @if (cycleStatus === 'closed') {
+      <span class="badge-neutral">Cycle clôturé</span>
+    } @else if (cotisation?.paid) {
+      <span class="badge-success">Payé</span>
+    } @else {
+      <span class="badge-warning">Non payé</span>
+      <p class="status-card__amount">{{ montantCotisation | fcfa }}</p>
+      @if (deadline) {
+        <p class="status-card__meta">Échéance : {{ deadline | date:'dd/MM/yyyy' }}</p>
+      }
+    }
+  </mat-card-content>
+</mat-card>
