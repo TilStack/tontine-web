@@ -1,21 +1,15 @@
 import { Component, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
+import { MatIcon } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
+import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 
 @Component({
   selector: 'app-no-department',
   standalone: true,
-  imports: [MatButton],
-  template: `
-    <div style="padding: 2rem; text-align: center;">
-      <h2>Compte sans département</h2>
-      <p>
-        Votre compte n'est associé à aucun département actif.<br />
-        Attendez l'invitation de votre administrateur ou contactez le support.
-      </p>
-      <button mat-stroked-button (click)="logout()">Se déconnecter</button>
-    </div>
-  `,
+  imports: [MatButton, MatIcon, AuthLayoutComponent],
+  templateUrl: './no-department.component.html',
+  styleUrl: './no-department.component.scss',
 })
 export class NoDepartmentComponent {
   private auth = inject(AuthService);
