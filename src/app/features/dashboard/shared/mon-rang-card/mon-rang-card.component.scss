@@ -1,0 +1,25 @@
+:host { display: block; }
+
+.rang-card__title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-3);
+}
+
+.rang-card__rank {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+
+  &--beneficiary {
+    color: var(--color-text-primary);
+  }
+}
+
+.rang-card__error {
+  margin-bottom: var(--space-2);
+}
+
+.rang-card__confirmed {
+  margin-top: var(--space-2);
+}

@@ -1,0 +1,37 @@
+<mat-card>
+  <mat-card-content>
+    <h3 class="rang-card__title">Mon rang</h3>
+
+    @if (ctaState === 'none') {
+      <p class="rang-card__rank">Vous êtes #{{ myRank }} dans la liste des bénéficiaires.</p>
+    } @else {
+      <p class="rang-card__rank rang-card__rank--beneficiary">
+        Vous êtes #{{ myRank }} — <strong>bénéficiaire de ce cycle</strong>
+      </p>
+
+      @if (ctaState === 'disabled') {
+        <mat-card-actions>
+          <button mat-flat-button disabled
+            matTooltip="En attente de toutes les cotisations">
+            Confirmer la réception
+          </button>
+        </mat-card-actions>
+      } @else if (ctaState === 'active') {
+        @if (error()) {
+          <p class="rang-card__error alert-error">{{ error() }}</p>
+        }
+        <mat-card-actions>
+          @if (loading()) {
+            <mat-progress-spinner mode="indeterminate" diameter="24" />
+          } @else {
+            <button mat-flat-button (click)="confirmReception()">
+              Confirmer la réception de {{ cycle?.montantVerse | fcfa }}
+            </button>
+          }
+        </mat-card-actions>
+      } @else if (ctaState === 'confirmed') {
+        <span class="badge-success rang-card__confirmed">Réception confirmée</span>
+      }
+    }
+  </mat-card-content>
+</mat-card>
