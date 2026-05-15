@@ -1,0 +1,28 @@
+<mat-card>
+  <mat-card-content>
+    <h3 class="caisse-card__title">Caisse</h3>
+    <p class="caisse-card__solde">{{ caisse?.solde | fcfa }}</p>
+
+    @if (recentTransactions.length > 0) {
+      <ul class="caisse-card__txlist">
+        @for (t of recentTransactions; track t.id) {
+          <li class="caisse-card__tx">
+            <span class="caisse-card__tx-label">{{ t.libelle || t.categorie }}</span>
+            <span class="caisse-card__tx-amount"
+              [class.caisse-card__tx-amount--credit]="t.type === 'credit'"
+              [class.caisse-card__tx-amount--debit]="t.type === 'debit'">
+              {{ t.type === 'credit' ? '+' : '-' }}{{ t.montant | fcfa }}
+            </span>
+            <span class="caisse-card__tx-date">{{ t.createdAt.toDate() | date:'dd/MM' }}</span>
+          </li>
+        }
+      </ul>
+    }
+  </mat-card-content>
+
+  <mat-card-actions>
+    <button mat-stroked-button (click)="openAddDialog()">
+      Ajouter une transaction
+    </button>
+  </mat-card-actions>
+</mat-card>
