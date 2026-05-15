@@ -86,7 +86,7 @@
   }
 
   &--active {
-    background: rgba(245, 158, 11, 0.12);
+    background: color-mix(in srgb, var(--sidebar-accent) 12%, transparent);
     border-left-color: var(--sidebar-accent);
     color: var(--sidebar-accent);
 
@@ -134,7 +134,7 @@
 .sidebar__user-role {
   display: block;
   font-size: 10px;
-  color: rgba(226, 232, 240, 0.5);
+  color: color-mix(in srgb, var(--sidebar-text) 50%, transparent);
   text-transform: capitalize;
 }
 
@@ -144,7 +144,7 @@
   cursor: pointer;
   padding: var(--space-1);
   border-radius: var(--radius-sm);
-  color: rgba(226, 232, 240, 0.5);
+  color: color-mix(in srgb, var(--sidebar-text) 50%, transparent);
   @include m.flex-center;
   transition: color var(--transition-fast), background var(--transition-fast);
 
@@ -223,7 +223,7 @@
   height: 32px;
   border-radius: var(--radius-full);
   background: var(--color-accent);
-  color: #ffffff;
+  color: var(--color-surface);
   font-size: var(--font-size-xs);
   font-weight: 700;
   @include m.flex-center;
