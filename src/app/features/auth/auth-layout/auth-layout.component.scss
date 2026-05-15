@@ -1,0 +1,48 @@
+@use 'app/core/styles/mixins' as m;
+
+.auth-wrapper {
+  min-height: 100vh;
+  background: var(--color-background);
+  @include m.flex-center;
+  flex-direction: column;
+  padding: var(--space-6) var(--space-4);
+}
+
+.auth-brand {
+  @include m.flex-center;
+  flex-direction: column;
+  margin-bottom: var(--space-6);
+  text-align: center;
+}
+
+.auth-brand__icon {
+  font-size: 40px;
+  width: 40px;
+  height: 40px;
+  color: var(--color-accent);
+  margin-bottom: var(--space-2);
+
+  @include m.desktop {
+    font-size: 48px;
+    width: 48px;
+    height: 48px;
+  }
+}
+
+.auth-brand__title {
+  color: var(--color-primary);
+  margin-bottom: var(--space-1);
+}
+
+.auth-brand__subtitle {
+  color: var(--color-text-secondary);
+}
+
+.auth-card {
+  background: var(--color-surface);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: var(--space-6);
+  width: 100%;
+  max-width: 420px;
+}
