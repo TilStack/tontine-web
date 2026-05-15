@@ -1,0 +1,27 @@
+<mat-card>
+  <mat-card-content>
+    <h3 class="history-card__title">Historique récent</h3>
+
+    @if (recentCycles.length === 0) {
+      <p class="history-card__empty">Aucun cycle clôturé.</p>
+    } @else {
+      <ul class="history-card__list">
+        @for (c of recentCycles; track c.id) {
+          <li class="history-card__item">
+            <span class="history-card__cycle">Cycle #{{ c.index }}</span>
+            <span class="history-card__name">{{ getMemberName(c.beneficiaryUid) }}</span>
+            <span class="history-card__amount">{{ c.montantVerse | fcfa }}</span>
+            <span class="history-card__date">{{ c.closedAt?.toDate() | date:'dd/MM/yy' }}</span>
+            @if (c.beneficiaryUid === myUid) {
+              <span class="badge-success">Bénéficiaire</span>
+            }
+          </li>
+        }
+      </ul>
+    }
+
+    <a class="history-card__link link-primary" routerLink="/app/cycles/history">
+      Voir tout l'historique →
+    </a>
+  </mat-card-content>
+</mat-card>
