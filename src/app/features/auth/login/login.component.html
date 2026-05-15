@@ -17,7 +17,7 @@
     }
 
     <div class="form-footer">
-      <button class="btn-primary" type="submit" [disabled]="loading()">
+      <button class="btn-primary" type="submit" [disabled]="loading()" [attr.aria-label]="loading() ? 'Connexion en cours' : 'Se connecter'">
         @if (loading()) {
           <mat-progress-spinner diameter="20" mode="indeterminate" />
         } @else {
