@@ -10,7 +10,6 @@ import {
 } from '@angular/forms';
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { Auth, updatePassword } from '@angular/fire/auth';
 import { AuthService } from '../../../core/services/auth.service';
@@ -32,7 +31,6 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
     MatLabel,
     MatError,
     MatInput,
-    MatButton,
     MatProgressSpinner,
     AuthLayoutComponent,
   ],
