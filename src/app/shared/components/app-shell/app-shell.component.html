@@ -1,40 +1,79 @@
-<mat-sidenav-container class="shell-container">
-  <mat-sidenav mode="side" opened class="sidenav">
-    <div class="dept-header">
-      <span class="dept-label">Département</span>
-      <span class="dept-name">{{ deptId() ?? '…' }}</span>
+<!-- src/app/shared/components/app-shell/app-shell.component.html -->
+<div class="shell">
+  <!-- Desktop sidebar -->
+  <aside class="sidebar" aria-label="Navigation principale">
+    <div class="sidebar__brand">
+      <mat-icon class="sidebar__brand-icon" aria-hidden="true">savings</mat-icon>
+      <span class="sidebar__brand-name">Tontine Départ.</span>
     </div>
 
-    <mat-nav-list>
+    <nav class="sidebar__nav">
       @for (item of visibleNavItems(); track item.route) {
-        <a mat-list-item
+        <a class="sidebar__nav-item"
            [routerLink]="item.route"
-           routerLinkActive="active-link"
-           [routerLinkActiveOptions]="{ exact: item.route === '/app' }">
-          <mat-icon matListItemIcon>{{ item.icon }}</mat-icon>
-          <span matListItemTitle>{{ item.label }}</span>
+           routerLinkActive="sidebar__nav-item--active"
+           [routerLinkActiveOptions]="{ exact: item.route === '/app' }"
+           [attr.aria-label]="item.label">
+          <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+          <span class="sidebar__nav-label">{{ item.label }}</span>
         </a>
       }
-    </mat-nav-list>
+    </nav>
 
-    <div class="user-footer">
+    <div class="sidebar__footer">
       @if (profile(); as p) {
-        <div class="avatar">{{ p.displayName.charAt(0) }}</div>
-        <div class="user-info">
-          <span class="user-name">{{ p.displayName }}</span>
-          <span class="user-role">{{ p.role }}</span>
+        <div class="sidebar__avatar" aria-hidden="true">
+          {{ p.displayName.charAt(0).toUpperCase() }}
+        </div>
+        <div class="sidebar__user-info">
+          <span class="sidebar__user-name">{{ p.displayName }}</span>
+          <span class="sidebar__user-role">{{ p.role }}</span>
         </div>
       }
-      @if (deptId() && uid()) {
-        <app-notification-bell [deptId]="deptId()!" [uid]="uid()!" />
-      }
-      <button mat-icon-button (click)="logout()" aria-label="Déconnexion">
-        <mat-icon>logout</mat-icon>
+      <button class="sidebar__logout" (click)="logout()" aria-label="Déconnexion">
+        <mat-icon aria-hidden="true">logout</mat-icon>
       </button>
     </div>
-  </mat-sidenav>
+  </aside>
 
-  <mat-sidenav-content class="main-content">
-    <router-outlet />
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  <!-- Right column: topbar + content -->
+  <div class="shell__main">
+    <header class="topbar">
+      <div class="topbar__dept">
+        <span class="topbar__dept-label">Département</span>
+        <span class="topbar__dept-name">{{ deptId() ?? '…' }}</span>
+      </div>
+      <div class="topbar__actions">
+        @if (deptId() && uid()) {
+          <app-notification-bell [deptId]="deptId()!" [uid]="uid()!" />
+        }
+        @if (profile(); as p) {
+          <div class="topbar__avatar" [attr.aria-label]="p.displayName">
+            {{ p.displayName.charAt(0).toUpperCase() }}
+          </div>
+        }
+        <button class="topbar__logout" (click)="logout()" aria-label="Déconnexion">
+          <mat-icon aria-hidden="true">logout</mat-icon>
+        </button>
+      </div>
+    </header>
+
+    <main class="shell__content">
+      <router-outlet />
+    </main>
+  </div>
+
+  <!-- Mobile bottom nav -->
+  <nav class="bottom-nav" aria-label="Navigation mobile">
+    @for (item of visibleNavItems(); track item.route) {
+      <a class="bottom-nav__item"
+         [routerLink]="item.route"
+         routerLinkActive="bottom-nav__item--active"
+         [routerLinkActiveOptions]="{ exact: item.route === '/app' }"
+         [attr.aria-label]="item.label">
+        <mat-icon aria-hidden="true">{{ item.icon }}</mat-icon>
+        <span class="bottom-nav__label">{{ item.label }}</span>
+      </a>
+    }
+  </nav>
+</div>

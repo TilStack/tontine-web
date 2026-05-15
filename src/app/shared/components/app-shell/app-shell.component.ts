@@ -6,10 +6,7 @@ import {
   computed,
 } from '@angular/core';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
-import { MatNavList, MatListItem } from '@angular/material/list';
 import { MatIcon } from '@angular/material/icon';
-import { MatIconButton } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { UserProfile, UserRole } from '../../../core/models/user.model';
@@ -23,13 +20,13 @@ interface NavItem {
 }
 
 const NAV_ITEMS: NavItem[] = [
-  { label: 'Tableau de bord', route: '/app', icon: 'dashboard', roles: ['admin', 'bureau', 'membre'] },
-  { label: 'Cotisations',     route: '/app/cotisations', icon: 'payments', roles: ['admin', 'bureau', 'membre'] },
-  { label: 'Membres',         route: '/app/membres',     icon: 'group',    roles: ['admin', 'bureau', 'membre'] },
+  { label: 'Tableau de bord', route: '/app',             icon: 'dashboard',       roles: ['admin', 'bureau', 'membre'] },
+  { label: 'Cotisations',     route: '/app/cotisations', icon: 'payments',        roles: ['admin', 'bureau', 'membre'] },
+  { label: 'Membres',         route: '/app/membres',     icon: 'group',           roles: ['admin', 'bureau', 'membre'] },
   { label: 'Caisse',          route: '/app/caisse',      icon: 'account_balance', roles: ['admin', 'bureau'] },
-  { label: 'Cycles',          route: '/app/cycles',      icon: 'loop',     roles: ['admin'] },
-  { label: 'Invitations',     route: '/app/invitations', icon: 'send',     roles: ['admin'] },
-  { label: 'Paramètres',      route: '/app/parametres',  icon: 'settings', roles: ['admin'] },
+  { label: 'Cycles',          route: '/app/cycles',      icon: 'loop',            roles: ['admin'] },
+  { label: 'Invitations',     route: '/app/invitations', icon: 'send',            roles: ['admin'] },
+  { label: 'Paramètres',      route: '/app/parametres',  icon: 'settings',        roles: ['admin'] },
 ];
 
 @Component({
@@ -39,13 +36,7 @@ const NAV_ITEMS: NavItem[] = [
     RouterOutlet,
     RouterLink,
     RouterLinkActive,
-    MatSidenav,
-    MatSidenavContainer,
-    MatSidenavContent,
-    MatNavList,
-    MatListItem,
     MatIcon,
-    MatIconButton,
     NotificationBellComponent,
   ],
   templateUrl: './app-shell.component.html',
