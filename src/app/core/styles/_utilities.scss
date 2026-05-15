@@ -48,3 +48,72 @@
   box-shadow: var(--shadow-sm);
   padding: var(--space-4);
 }
+
+/* Lien de navigation primaire */
+.link-primary {
+  color: var(--color-primary);
+  font-weight: 500;
+  font-size: var(--font-size-sm);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-bottom-color var(--transition-fast);
+  &:hover {
+    border-bottom-color: var(--color-primary);
+  }
+}
+
+/* Bouton CTA pleine largeur — ambre, touch-friendly */
+.btn-primary {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  height: 48px;
+  background: var(--color-accent);
+  color: #ffffff;
+  font-family: var(--font-family);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  border-radius: var(--radius-md);
+  border: none;
+  cursor: pointer;
+  transition: background var(--transition-fast);
+  &:hover:not(:disabled) {
+    background: var(--color-accent-hover);
+  }
+  &:disabled {
+    background: var(--color-border);
+    color: var(--color-text-secondary);
+    cursor: not-allowed;
+  }
+}
+
+/* Bandeaux d'alerte */
+%alert-base {
+  border-radius: var(--radius-sm);
+  padding: var(--space-3) var(--space-4);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  margin-top: var(--space-3);
+}
+
+.alert-error {
+  @extend %alert-base;
+  background: rgba(239, 68, 68, 0.08);
+  border-left: 3px solid var(--color-error);
+  color: var(--color-error);
+}
+
+.alert-warning {
+  @extend %alert-base;
+  background: rgba(249, 115, 22, 0.08);
+  border-left: 3px solid var(--color-warning);
+  color: var(--color-warning);
+}
+
+.alert-success {
+  @extend %alert-base;
+  background: rgba(16, 185, 129, 0.08);
+  border-left: 3px solid var(--color-success);
+  color: #064e3b; /* #10b981 sur blanc = 3.0:1 — insuffisant WCAG AA */
+}
