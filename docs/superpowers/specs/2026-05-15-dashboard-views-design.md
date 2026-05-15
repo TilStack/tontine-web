@@ -217,11 +217,15 @@ The `penalized` badge state is new — currently `CotisationsListCard` only show
   align-items: center;
 }
 
-/* Bouton ambre width-auto pour usage dans les cards */
-.btn-primary--auto {
-  width: auto;
-  padding: 0 var(--space-4);
-}
+/* Bouton ambre width-auto pour usage dans les cards — modifier BEM imbriqué */
+// Dans _utilities.scss, à l'intérieur du bloc .btn-primary existant :
+// .btn-primary {
+//   width: 100%; ...
+//   &--auto {
+//     width: auto;
+//     padding: 0 var(--space-4);
+//   }
+// }
 ```
 
 ### 5. Button Hierarchy (Admin Dashboard)
