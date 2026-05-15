@@ -1,0 +1,61 @@
+@if (!ctx()) {
+  <div class="dashboard-loading">
+    @for (i of [1, 2, 3, 4, 5, 6]; track i) {
+      <div class="card-skeleton">
+        <div class="skeleton skeleton-line skeleton-line--lg"></div>
+        <div class="skeleton skeleton-line skeleton-line--full"></div>
+      </div>
+    }
+  </div>
+} @else {
+  <div class="dashboard-grid">
+    @if (ctx()!.cycleData) {
+      <app-cotisations-list-card
+        class="dashboard-grid__full"
+        [cotisations]="ctx()!.cycleData!.cotisations"
+        [members]="ctx()!.members"
+        [cycleStatus]="ctx()!.cycleData!.cycle.status"
+        [markingUid]="markingUid()"
+        (markPaid)="onMarkPaid($event)">
+      </app-cotisations-list-card>
+    }
+
+    <app-caisse-summary-card
+      [caisse]="ctx()!.caisse"
+      [transactions]="ctx()!.transactions"
+      [deptId]="ctx()!.deptId">
+    </app-caisse-summary-card>
+
+    @if (ctx()!.cycleData) {
+      <app-beneficiaire-card
+        [cycle]="ctx()!.cycleData!.cycle"
+        [members]="ctx()!.members"
+        [montantCotisation]="ctx()!.saison?.montantCotisation ?? 0">
+      </app-beneficiaire-card>
+    }
+
+    <app-cotisation-status-card
+      [cycleStatus]="ctx()!.cycleData?.cycle?.status ?? null"
+      [cotisation]="myCotisation()"
+      [montantCotisation]="ctx()!.saison?.montantCotisation ?? 0"
+      [deadline]="ctx()!.cycleData?.cycle?.deadline?.toDate() ?? null">
+    </app-cotisation-status-card>
+
+    @if (ctx()!.saison && ctx()!.cycleData) {
+      <app-mon-rang-card
+        [myProfile]="ctx()!.myProfile!"
+        [memberOrder]="ctx()!.saison!.memberOrder"
+        [cycle]="ctx()!.cycleData!.cycle"
+        [saisonId]="ctx()!.saison!.id"
+        [deptId]="ctx()!.deptId">
+      </app-mon-rang-card>
+    }
+
+    <app-history-card
+      class="dashboard-grid__full"
+      [closedCycles]="ctx()!.closedCycles"
+      [members]="ctx()!.members"
+      [myUid]="ctx()!.uid">
+    </app-history-card>
+  </div>
+}
