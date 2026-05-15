@@ -1,0 +1,101 @@
+@use 'app/core/styles/mixins' as m;
+
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.dashboard-grid__full {
+  grid-column: 1 / -1;
+}
+
+.dashboard-loading {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+  padding: var(--space-4);
+}
+
+.card-skeleton {
+  border-radius: var(--radius-lg);
+  background: var(--color-surface);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+  min-height: 120px;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.skeleton-line {
+  height: 16px;
+  border-radius: var(--radius-sm);
+}
+
+.skeleton-line--lg   { height: 24px; }
+.skeleton-line--sm   { height: 12px; width: 60%; }
+.skeleton-line--full { width: 100%; }
+
+/* Alerte no-saison */
+.admin-no-saison {
+  @include m.flex-between;
+  gap: var(--space-4);
+}
+
+/* Bloc cycle */
+.cycle-card__title {
+  font-size: var(--font-size-base);
+  font-weight: 600;
+  color: var(--color-text-primary);
+  margin-bottom: var(--space-2);
+}
+
+.cycle-card__error {
+  margin-top: var(--space-2);
+}
+
+.cycle-card__actions {
+  display: flex;
+  gap: var(--space-2);
+  flex-wrap: wrap;
+}
+
+/* Bouton forcer clôture */
+.btn-force-close {
+  color: var(--color-warning) !important;
+  border-color: var(--color-warning) !important;
+}
+
+/* Bloc membres */
+.admin-members__header {
+  @include m.flex-between;
+  margin-bottom: var(--space-3);
+}
+
+.admin-members__table {
+  width: 100%;
+}
+
+.admin-members__table-wrap {
+  display: none;
+
+  @include m.desktop { display: block; }
+}
+
+.admin-members__list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+
+  @include m.desktop { display: none; }
+}
+
+/* Mobile member cards */
+.member-card__body    { @include m.flex-between; }
+.member-card__info    { display: flex; flex-direction: column; gap: var(--space-1); }
+.member-card__name    { font-weight: 600; color: var(--color-text-primary); }
+.member-card__email   { font-size: var(--font-size-sm); color: var(--color-text-secondary); }
+.member-card__role    { margin-top: var(--space-1); }
+.member-card__actions { display: flex; align-items: center; }

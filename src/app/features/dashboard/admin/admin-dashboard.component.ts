@@ -2,11 +2,12 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { from, of, switchMap, combineLatest, map } from 'rxjs';
 import { RouterLink } from '@angular/router';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import { MatButton } from '@angular/material/button';
+import { MatButton, MatIconButton } from '@angular/material/button';
 import { MatCard, MatCardContent, MatCardActions } from '@angular/material/card';
 import { MatTooltip } from '@angular/material/tooltip';
 import { MatDialog } from '@angular/material/dialog';
+import { MatIcon } from '@angular/material/icon';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import {
   MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef,
   MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow,
@@ -22,170 +23,23 @@ import { BeneficiaireCardComponent } from '../shared/beneficiaire-card/beneficia
 import { MonRangCardComponent } from '../shared/mon-rang-card/mon-rang-card.component';
 import { HistoryCardComponent } from '../shared/history-card/history-card.component';
 import { InviteDialogComponent } from '../../membres/invite-dialog/invite-dialog.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { UserProfile, UserRole } from '../../../core/models/user.model';
 
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
   imports: [
-    RouterLink, MatProgressSpinner,
-    MatButton, MatCard, MatCardContent, MatCardActions, MatTooltip,
+    RouterLink,
+    MatButton, MatIconButton, MatIcon, MatCard, MatCardContent, MatCardActions,
+    MatTooltip, MatProgressSpinner,
     MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef,
     MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow,
     CotisationsListCardComponent, CaisseSummaryCardComponent, BeneficiaireCardComponent,
     MonRangCardComponent, HistoryCardComponent,
   ],
-  template: `
-    @if (!ctx()) {
-      <div style="display:flex;justify-content:center;padding:40px">
-        <mat-progress-spinner mode="indeterminate"></mat-progress-spinner>
-      </div>
-    } @else {
-      <div style="display:flex;flex-direction:column;gap:16px;padding:16px">
-
-        <!-- Bloc 0 — Alerte saison -->
-        @if (!ctx()!.saison) {
-          <div style="background:#fff3cd;border:1px solid #ffc107;border-radius:8px;padding:16px;display:flex;align-items:center;justify-content:space-between">
-            <span>⚠️ Aucune saison en cours — Configurez une nouvelle saison pour démarrer.</span>
-            <a routerLink="/app/cycles/setup">
-              <button mat-flat-button color="accent">Créer une saison</button>
-            </a>
-          </div>
-        }
-
-        <!-- Bloc 1 — Actions cycle -->
-        @if (ctx()!.cycleData) {
-          <mat-card>
-            <mat-card-content>
-              <h3>Cycle #{{ ctx()!.cycleData!.cycle.index }} —
-                {{ ctx()!.cycleData!.cycle.status === 'open' ? 'Ouvert' : 'Clôturé' }}</h3>
-              @if (cycleError()) {
-                <p style="color:red">{{ cycleError() }}</p>
-              }
-            </mat-card-content>
-            <mat-card-actions>
-              @if (ctx()!.cycleData!.cycle.status === 'open') {
-                @if (cycleLoading()) {
-                  <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
-                } @else if (deadlinePassed()) {
-                  <button mat-flat-button color="warn" (click)="onForceClose()">
-                    Forcer la clôture
-                  </button>
-                } @else {
-                  <button mat-flat-button color="primary" disabled
-                    matTooltip="En attente de la confirmation du bénéficiaire">
-                    Clôturer le cycle
-                  </button>
-                }
-              } @else {
-                @if (cycleLoading()) {
-                  <mat-progress-spinner mode="indeterminate" diameter="24"></mat-progress-spinner>
-                } @else if (canOpenNext()) {
-                  <button mat-flat-button color="primary" (click)="onOpenNext()">
-                    Ouvrir le cycle suivant
-                  </button>
-                } @else if (ctx()!.saison?.status === 'completed') {
-                  <a routerLink="/app/cycles/setup">
-                    <button mat-stroked-button>Configurer une nouvelle saison</button>
-                  </a>
-                }
-              }
-            </mat-card-actions>
-          </mat-card>
-        }
-
-        <!-- Bloc 2 — Membres -->
-        <mat-card>
-          <mat-card-content>
-            <div style="display:flex;justify-content:space-between;align-items:center">
-              <h3>Membres ({{ ctx()!.members.length }})</h3>
-              <button mat-stroked-button (click)="openInviteDialog()">
-                Inviter un membre
-              </button>
-            </div>
-            @if (roleError()) {
-              <p style="color:red">{{ roleError() }}</p>
-            }
-            <table mat-table [dataSource]="ctx()!.members" style="width:100%">
-              <ng-container matColumnDef="name">
-                <th mat-header-cell *matHeaderCellDef>Nom</th>
-                <td mat-cell *matCellDef="let m">{{ m.displayName }}</td>
-              </ng-container>
-              <ng-container matColumnDef="email">
-                <th mat-header-cell *matHeaderCellDef>Email</th>
-                <td mat-cell *matCellDef="let m">{{ m.email }}</td>
-              </ng-container>
-              <ng-container matColumnDef="role">
-                <th mat-header-cell *matHeaderCellDef>Rôle</th>
-                <td mat-cell *matCellDef="let m">{{ m.role }}</td>
-              </ng-container>
-              <ng-container matColumnDef="action">
-                <th mat-header-cell *matHeaderCellDef></th>
-                <td mat-cell *matCellDef="let m">
-                  @if (m.role === 'membre') {
-                    <button mat-stroked-button [disabled]="roleUpdatingUid() === m.uid"
-                      (click)="updateRole(m, 'bureau')">
-                      Promouvoir en Bureau
-                    </button>
-                  } @else if (m.role === 'bureau') {
-                    <button mat-stroked-button [disabled]="roleUpdatingUid() === m.uid"
-                      (click)="updateRole(m, 'membre')">
-                      Rétrograder en Membre
-                    </button>
-                  }
-                </td>
-              </ng-container>
-              <tr mat-header-row *matHeaderRowDef="memberColumns"></tr>
-              <tr mat-row *matRowDef="let row; columns: memberColumns"></tr>
-            </table>
-          </mat-card-content>
-        </mat-card>
-
-        <!-- Bloc 3 — Cotisations + Caisse (réutilise cartes Bureau) -->
-        @if (ctx()!.cycleData) {
-          <app-cotisations-list-card
-            [cotisations]="ctx()!.cycleData!.cotisations"
-            [members]="ctx()!.members"
-            [cycleStatus]="ctx()!.cycleData!.cycle.status"
-            [markingUid]="markingUid()"
-            (markPaid)="onMarkPaid($event)">
-          </app-cotisations-list-card>
-        }
-
-        <app-caisse-summary-card
-          [caisse]="ctx()!.caisse"
-          [transactions]="ctx()!.transactions"
-          [deptId]="ctx()!.deptId">
-        </app-caisse-summary-card>
-
-        <!-- Bloc 4 — Mes infos -->
-        @if (ctx()!.cycleData) {
-          <app-beneficiaire-card
-            [cycle]="ctx()!.cycleData!.cycle"
-            [members]="ctx()!.members"
-            [montantCotisation]="ctx()!.saison?.montantCotisation ?? 0">
-          </app-beneficiaire-card>
-        }
-
-        @if (ctx()!.saison && ctx()!.cycleData) {
-          <app-mon-rang-card
-            [myProfile]="ctx()!.myProfile!"
-            [memberOrder]="ctx()!.saison!.memberOrder"
-            [cycle]="ctx()!.cycleData!.cycle"
-            [saisonId]="ctx()!.saison!.id"
-            [deptId]="ctx()!.deptId">
-          </app-mon-rang-card>
-        }
-
-        <app-history-card
-          [closedCycles]="ctx()!.closedCycles"
-          [members]="ctx()!.members"
-          [myUid]="ctx()!.uid">
-        </app-history-card>
-
-      </div>
-    }
-  `,
+  templateUrl: './admin-dashboard.component.html',
+  styleUrl: './admin-dashboard.component.scss',
 })
 export class AdminDashboardComponent {
   private auth = inject(AuthService);
@@ -243,6 +97,20 @@ export class AdminDashboardComponent {
     const cycle = this.ctx()?.cycleData?.cycle;
     return cycle?.status === 'closed';
   });
+
+  confirmForceClose(): void {
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Forcer la clôture du cycle',
+        message: "Êtes-vous sûr de vouloir forcer la clôture ? Les membres n'ayant pas payé seront pénalisés.",
+        confirmLabel: 'Forcer la clôture',
+        confirmColor: 'error',
+      } satisfies ConfirmDialogData,
+      width: '420px',
+    }).afterClosed().subscribe((confirmed: boolean | undefined) => {
+      if (confirmed) this.onForceClose();
+    });
+  }
 
   async onMarkPaid(uid: string): Promise<void> {
     const ctx = this.ctx();
