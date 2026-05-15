@@ -1,0 +1,18 @@
+.confirm-dialog__message {
+  color: var(--color-text-primary);
+  font-size: var(--font-size-sm);
+  line-height: 1.5;
+  margin: var(--space-2) 0;
+}
+
+.confirm-dialog__confirm {
+  &--error {
+    background: var(--color-error) !important;
+    color: #fff !important;
+  }
+
+  &--warning {
+    background: var(--color-warning) !important;
+    color: #fff !important;
+  }
+}
