@@ -11,6 +11,7 @@ import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { AuthService } from '../../../core/services/auth.service';
+import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 
 @Component({
   selector: 'app-login',
@@ -24,8 +25,10 @@ import { AuthService } from '../../../core/services/auth.service';
     MatInput,
     MatButton,
     MatProgressSpinner,
+    AuthLayoutComponent,
   ],
   templateUrl: './login.component.html',
+  styleUrl: './login.component.scss',
 })
 export class LoginComponent {
   private auth = inject(AuthService);
