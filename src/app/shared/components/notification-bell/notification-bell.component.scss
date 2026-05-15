@@ -1,0 +1,11 @@
+// src/app/shared/components/notification-bell/notification-bell.component.scss
+:host {
+  display: inline-flex;
+  align-items: center;
+}
+
+::ng-deep .mat-badge-content {
+  background: var(--color-error);
+  font-family: var(--font-family);
+  font-size: var(--font-size-xs);
+}

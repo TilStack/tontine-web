@@ -26,6 +26,7 @@ import { NotificationDoc } from '../../../core/models/notification.model';
     NotificationPanelComponent,
   ],
   templateUrl: './notification-bell.component.html',
+  styleUrl: './notification-bell.component.scss',
 })
 export class NotificationBellComponent implements OnInit {
   @Input({ required: true }) deptId!: string;
