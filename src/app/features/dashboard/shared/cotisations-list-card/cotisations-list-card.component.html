@@ -1,0 +1,44 @@
+<mat-card>
+  <mat-card-content>
+    <h3 class="cotisations-card__title">
+      Cotisations — {{ paidCount }} / {{ members.length }} payées
+    </h3>
+    <table mat-table [dataSource]="rows" class="cotisations-card__table">
+      <ng-container matColumnDef="name">
+        <th mat-header-cell *matHeaderCellDef>Membre</th>
+        <td mat-cell *matCellDef="let r">{{ r.displayName }}</td>
+      </ng-container>
+
+      <ng-container matColumnDef="status">
+        <th mat-header-cell *matHeaderCellDef>Statut</th>
+        <td mat-cell *matCellDef="let r">
+          @if (r.cotisation?.paid) {
+            <span class="badge-success">Payé</span>
+          } @else if (r.cotisation?.penalized) {
+            <span class="badge-error">Pénalisé</span>
+          } @else {
+            <span class="badge-warning">Non payé</span>
+          }
+        </td>
+      </ng-container>
+
+      <ng-container matColumnDef="action">
+        <th mat-header-cell *matHeaderCellDef></th>
+        <td mat-cell *matCellDef="let r">
+          @if (!r.cotisation?.paid && cycleStatus === 'open') {
+            @if (markingUid === r.uid) {
+              <mat-progress-spinner mode="indeterminate" diameter="20" />
+            } @else {
+              <button mat-stroked-button (click)="markPaid.emit(r.uid)">
+                Enregistrer paiement
+              </button>
+            }
+          }
+        </td>
+      </ng-container>
+
+      <tr mat-header-row *matHeaderRowDef="columns"></tr>
+      <tr mat-row *matRowDef="let row; columns: columns"></tr>
+    </table>
+  </mat-card-content>
+</mat-card>
