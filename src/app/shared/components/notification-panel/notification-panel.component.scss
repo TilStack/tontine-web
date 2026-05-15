@@ -1,0 +1,57 @@
+// src/app/shared/components/notification-panel/notification-panel.component.scss
+.notif-panel {
+  min-width: 320px;
+  max-width: 400px;
+
+  &__empty {
+    padding: var(--space-4);
+    text-align: center;
+    color: var(--color-text-secondary);
+    font-size: var(--font-size-sm);
+  }
+
+  &__header {
+    padding: var(--space-2) var(--space-4);
+    display: flex;
+    justify-content: flex-end;
+  }
+
+  &__mark-all {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: var(--font-family);
+    font-size: var(--font-size-xs);
+    font-weight: 500;
+    color: var(--color-primary);
+    padding: var(--space-1) var(--space-2);
+    border-radius: var(--radius-sm);
+    transition: background var(--transition-fast);
+
+    &:hover {
+      background: color-mix(in srgb, var(--color-primary) 6%, transparent);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--color-primary);
+      outline-offset: 2px;
+    }
+  }
+}
+
+.notif-item {
+  cursor: pointer;
+  transition: background var(--transition-fast);
+
+  &:hover {
+    background: var(--color-background);
+  }
+
+  &--unread {
+    font-weight: 600;
+
+    mat-icon {
+      color: var(--color-accent);
+    }
+  }
+}

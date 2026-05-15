@@ -1,11 +1,9 @@
-<div class="notif-panel" style="min-width: 320px; max-width: 400px;">
+<div class="notif-panel">
   @if (notifications.length === 0) {
-    <div style="padding: 16px; text-align: center; color: #888;">
-      Aucune notification.
-    </div>
+    <p class="notif-panel__empty">Aucune notification.</p>
   } @else {
-    <div style="padding: 8px 16px; display: flex; justify-content: flex-end;">
-      <button mat-button (click)="handleMarkAll()">
+    <div class="notif-panel__header">
+      <button class="notif-panel__mark-all" (click)="handleMarkAll()">
         Tout marquer comme lu
       </button>
     </div>
@@ -13,10 +11,10 @@
     <mat-list>
       @for (notif of notifications; track notif.id) {
         <mat-list-item
-          (click)="handleClick(notif)"
-          style="cursor: pointer;"
-          [style.font-weight]="notif.read ? 'normal' : 'bold'">
-          <mat-icon matListItemIcon>
+          class="notif-item"
+          [class.notif-item--unread]="!notif.read"
+          (click)="handleClick(notif)">
+          <mat-icon matListItemIcon aria-hidden="true">
             {{ notif.read ? 'notifications_none' : 'notifications_active' }}
           </mat-icon>
           <span matListItemTitle>{{ notif.title }}</span>
