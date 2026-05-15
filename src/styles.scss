@@ -70,6 +70,13 @@ body {
   border-radius: var(--radius-xl) !important;
 }
 
+// Badge Material : couleur et typographie alignées sur le design system
+.mat-badge-content {
+  background: var(--color-error) !important;
+  font-family: var(--font-family) !important;
+  font-size: var(--font-size-xs) !important;
+}
+
 // Scrollbar discrète sur les navigateurs Webkit
 ::-webkit-scrollbar {
   width: 6px;

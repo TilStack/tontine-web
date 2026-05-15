@@ -1,11 +1,13 @@
 import {
   Component,
+  DestroyRef,
   Input,
   OnInit,
   inject,
   signal,
   computed,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { MatBadge } from '@angular/material/badge';
@@ -33,6 +35,7 @@ export class NotificationBellComponent implements OnInit {
   @Input({ required: true }) uid!: string;
 
   private notifService = inject(NotificationService);
+  private destroyRef = inject(DestroyRef);
 
   readonly notifications = signal<NotificationDoc[]>([]);
   readonly unreadCount = computed(
@@ -42,6 +45,7 @@ export class NotificationBellComponent implements OnInit {
   ngOnInit(): void {
     this.notifService
       .watchNotifications(this.deptId, this.uid)
+      .pipe(takeUntilDestroyed(this.destroyRef))
       .subscribe((notifs) => this.notifications.set(notifs));
   }
 }
