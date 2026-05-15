@@ -1,0 +1,15 @@
+<mat-card>
+  <mat-card-content>
+    <h3 class="beneficiaire-card__title">Bénéficiaire du cycle</h3>
+    <p class="beneficiaire-card__name">{{ beneficiaryName }}</p>
+    <p class="beneficiaire-card__amount">{{ montantEstime | fcfa }}</p>
+
+    @if (cycle.confirmedAt) {
+      <span class="badge-success beneficiaire-card__badge">
+        Confirmé le {{ cycle.confirmedAt.toDate() | date:'dd/MM/yyyy' }}
+      </span>
+    } @else {
+      <span class="badge-neutral beneficiaire-card__badge">En attente de confirmation</span>
+    }
+  </mat-card-content>
+</mat-card>
