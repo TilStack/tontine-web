@@ -1,0 +1,56 @@
+@if (!ctx()) {
+  <div class="dashboard-loading">
+    <div class="card-skeleton">
+      <div class="skeleton skeleton-line skeleton-line--lg"></div>
+      <div class="skeleton skeleton-line skeleton-line--full"></div>
+    </div>
+    <div class="card-skeleton">
+      <div class="skeleton skeleton-line skeleton-line--lg"></div>
+      <div class="skeleton skeleton-line skeleton-line--full"></div>
+      <div class="skeleton skeleton-line skeleton-line--sm"></div>
+    </div>
+    <div class="card-skeleton">
+      <div class="skeleton skeleton-line skeleton-line--lg"></div>
+      <div class="skeleton skeleton-line skeleton-line--full"></div>
+    </div>
+    <div class="card-skeleton dashboard-grid__full">
+      <div class="skeleton skeleton-line skeleton-line--lg"></div>
+      <div class="skeleton skeleton-line skeleton-line--full"></div>
+      <div class="skeleton skeleton-line skeleton-line--full"></div>
+    </div>
+  </div>
+} @else {
+  <div class="dashboard-grid">
+    <app-cotisation-status-card
+      [cycleStatus]="ctx()!.cycleData?.cycle?.status ?? null"
+      [cotisation]="myCotisation()"
+      [montantCotisation]="ctx()!.saison?.montantCotisation ?? 0"
+      [deadline]="ctx()!.cycleData?.cycle?.deadline?.toDate() ?? null">
+    </app-cotisation-status-card>
+
+    @if (ctx()!.cycleData) {
+      <app-progression-card
+        [paidCount]="paidCount()"
+        [totalCount]="ctx()!.members.length"
+        [montantCotisation]="ctx()!.saison!.montantCotisation">
+      </app-progression-card>
+    }
+
+    @if (ctx()!.saison && ctx()!.cycleData) {
+      <app-mon-rang-card
+        [myProfile]="ctx()!.myProfile!"
+        [memberOrder]="ctx()!.saison!.memberOrder"
+        [cycle]="ctx()!.cycleData!.cycle"
+        [saisonId]="ctx()!.saison!.id"
+        [deptId]="ctx()!.deptId">
+      </app-mon-rang-card>
+    }
+
+    <app-history-card
+      class="dashboard-grid__full"
+      [closedCycles]="ctx()!.closedCycles"
+      [members]="ctx()!.members"
+      [myUid]="ctx()!.uid">
+    </app-history-card>
+  </div>
+}
