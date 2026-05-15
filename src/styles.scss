@@ -70,8 +70,8 @@ body {
   border-radius: var(--radius-xl) !important;
 }
 
-// Badge Material : couleur et typographie alignées sur le design system
-.mat-badge-content {
+// Badge notification bell — scoped pour ne pas affecter les autres badges Material
+app-notification-bell .mat-badge-content {
   background: var(--color-error) !important;
   font-family: var(--font-family) !important;
   font-size: var(--font-size-xs) !important;
