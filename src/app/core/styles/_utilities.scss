@@ -86,6 +86,11 @@
     color: var(--color-text-secondary);
     cursor: not-allowed;
   }
+
+  &--auto {
+    width: auto;
+    padding: 0 var(--space-4);
+  }
 }
 
 /* Bandeaux d'alerte */
@@ -116,4 +121,34 @@
   background: rgba(16, 185, 129, 0.08);
   border-left: 3px solid var(--color-success);
   color: #064e3b; /* #10b981 sur blanc = 3.0:1 — insuffisant WCAG AA */
+}
+
+/* ─── Skeleton loader ─────────────────────────────────────────────────────── */
+@keyframes skeleton-shimmer {
+  0%   { background-position: 200% 0; }
+  100% { background-position: -200% 0; }
+}
+
+.skeleton {
+  background: linear-gradient(
+    90deg,
+    var(--color-border) 25%,
+    color-mix(in srgb, var(--color-border) 40%, transparent) 50%,
+    var(--color-border) 75%
+  );
+  background-size: 200% 100%;
+  animation: skeleton-shimmer 1.5s infinite;
+  border-radius: var(--radius-sm);
+}
+
+/* ─── Badge neutre — états en attente, cycles clôturés ──────────────────── */
+.badge-neutral {
+  background: var(--color-border);
+  color: var(--color-text-secondary);
+  padding: 2px var(--space-2);
+  border-radius: var(--radius-sm);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  display: inline-flex;
+  align-items: center;
 }
