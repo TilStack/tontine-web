@@ -58,6 +58,13 @@ describe('AppShellComponent', () => {
     expect(items.length).toBe(3);
   });
 
+  it('visibleNavItems() filters correctly for bureau role', () => {
+    component.profile.set({ role: 'bureau' } as UserProfile);
+    const items = component.visibleNavItems();
+    expect(items.every(i => i.roles.includes('bureau'))).toBe(true);
+    expect(items.length).toBe(4);
+  });
+
   it('logout() delegates to authService.logout()', () => {
     component.logout();
     expect(authMock.logout).toHaveBeenCalled();

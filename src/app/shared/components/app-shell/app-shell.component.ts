@@ -1,10 +1,12 @@
 import {
   Component,
+  DestroyRef,
   OnInit,
   inject,
   signal,
   computed,
 } from '@angular/core';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
@@ -45,8 +47,7 @@ const NAV_ITEMS: NavItem[] = [
 export class AppShellComponent implements OnInit {
   private authService = inject(AuthService);
   private userService = inject(UserService);
-
-  readonly user$ = this.authService.user$;
+  private destroyRef = inject(DestroyRef);
 
   profile = signal<UserProfile | null>(null);
   deptId = signal<string | null>(null);
@@ -67,9 +68,11 @@ export class AppShellComponent implements OnInit {
     if (!currentUid) return;
     this.uid.set(currentUid);
 
-    this.userService.watchProfile(claims.deptId, currentUid).subscribe((p) => {
-      if (p) this.profile.set(p);
-    });
+    this.userService.watchProfile(claims.deptId, currentUid)
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe((p) => {
+        if (p) this.profile.set(p);
+      });
   }
 
   logout(): void {

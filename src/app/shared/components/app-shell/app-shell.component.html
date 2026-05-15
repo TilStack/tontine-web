@@ -48,7 +48,7 @@
           <app-notification-bell [deptId]="deptId()!" [uid]="uid()!" />
         }
         @if (profile(); as p) {
-          <div class="topbar__avatar" [attr.aria-label]="p.displayName">
+          <div class="topbar__avatar" role="img" [attr.aria-label]="p.displayName + ' — utilisateur connecté'">
             {{ p.displayName.charAt(0).toUpperCase() }}
           </div>
         }
