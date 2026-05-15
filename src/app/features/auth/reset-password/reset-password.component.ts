@@ -11,9 +11,11 @@ import {
 import { MatFormField, MatLabel, MatError } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { Auth, updatePassword } from '@angular/fire/auth';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
+import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 
 function passwordsMatch(control: AbstractControl): ValidationErrors | null {
   const password = control.get('password')?.value as string;
@@ -31,8 +33,11 @@ function passwordsMatch(control: AbstractControl): ValidationErrors | null {
     MatError,
     MatInput,
     MatButton,
+    MatProgressSpinner,
+    AuthLayoutComponent,
   ],
   templateUrl: './reset-password.component.html',
+  styleUrl: './reset-password.component.scss',
 })
 export class ResetPasswordComponent {
   private auth = inject(Auth);
