@@ -1,42 +1,53 @@
-<div class="request-wrapper">
-  <div class="request-card">
-    @if (submitted()) {
-      <h2>Demande envoyée !</h2>
-      <p>Votre demande de création de département a été transmise. Vous recevrez une confirmation par email.</p>
-      <a routerLink="/auth/login">Retour à la connexion</a>
-    } @else {
-      <h2>Créer un département</h2>
-      <p>Remplissez ce formulaire pour soumettre une demande de création de département au Super Admin.</p>
+<app-auth-layout>
+  @if (submitted()) {
+    <div class="submitted">
+      <h3 class="h3">Demande envoyée !</h3>
+      <p class="body-text page-intro">
+        Un administrateur va examiner votre demande et vous contacter par email.
+      </p>
+      <a class="link-primary" routerLink="/auth/login">Retour à la connexion</a>
+    </div>
+  } @else {
+    <h3 class="h3">Rejoindre un département</h3>
+    <p class="body-text page-intro">
+      Remplissez ce formulaire pour demander l'accès à votre département.
+    </p>
 
-      <form [formGroup]="form" (ngSubmit)="submit()">
-        <mat-form-field appearance="outline">
-          <mat-label>Votre nom</mat-label>
-          <input matInput formControlName="requesterName" />
-        </mat-form-field>
+    <form [formGroup]="form" (ngSubmit)="submit()">
+      <mat-form-field appearance="outline">
+        <mat-label>Votre nom</mat-label>
+        <input matInput formControlName="requesterName" autocomplete="name" />
+      </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Votre email</mat-label>
-          <input matInput type="email" formControlName="requesterEmail" />
-        </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Votre email</mat-label>
+        <input matInput type="email" formControlName="requesterEmail" autocomplete="email" />
+      </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Nom du département</mat-label>
-          <input matInput formControlName="deptName" />
-        </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Nom du département souhaité</mat-label>
+        <input matInput formControlName="deptName" />
+      </mat-form-field>
 
-        <mat-form-field appearance="outline">
-          <mat-label>Message (optionnel)</mat-label>
-          <textarea matInput formControlName="message" rows="3"></textarea>
-        </mat-form-field>
+      <mat-form-field appearance="outline">
+        <mat-label>Message (optionnel)</mat-label>
+        <textarea matInput formControlName="message" rows="3"></textarea>
+      </mat-form-field>
 
-        @if (error()) {
-          <p class="error-msg">{{ error() }}</p>
-        }
+      @if (error()) {
+        <div class="alert-error" role="alert">{{ error() }}</div>
+      }
 
-        <button mat-flat-button color="primary" type="submit" [disabled]="loading()">
-          Soumettre la demande
+      <div class="form-footer">
+        <button class="btn-primary" type="submit" [disabled]="loading()" [attr.aria-label]="loading() ? 'Envoi en cours' : 'Envoyer la demande'">
+          @if (loading()) {
+            <mat-progress-spinner diameter="20" mode="indeterminate" />
+          } @else {
+            Envoyer la demande
+          }
         </button>
-      </form>
-    }
-  </div>
-</div>
+        <a class="link-primary" routerLink="/auth/login">Déjà un compte ?</a>
+      </div>
+    </form>
+  }
+</app-auth-layout>

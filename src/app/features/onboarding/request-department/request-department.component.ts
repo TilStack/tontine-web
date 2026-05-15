@@ -9,12 +9,14 @@ import {
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatButton } from '@angular/material/button';
+import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import {
   Firestore,
   collection,
   addDoc,
   serverTimestamp,
 } from '@angular/fire/firestore';
+import { AuthLayoutComponent } from '../../auth/auth-layout/auth-layout.component';
 
 @Component({
   selector: 'app-request-department',
@@ -26,8 +28,11 @@ import {
     MatLabel,
     MatInput,
     MatButton,
+    MatProgressSpinner,
+    AuthLayoutComponent,
   ],
   templateUrl: './request-department.component.html',
+  styleUrl: './request-department.component.scss',
 })
 export class RequestDepartmentComponent {
   private firestore = inject(Firestore);
