@@ -11,6 +11,7 @@ import { UserProfile } from '../../../../core/models/user.model';
   standalone: true,
   imports: [MatList, MatListItem, MatIconButton, MatIcon, MatProgressSpinner],
   templateUrl: './cotisation-checklist.component.html',
+  styleUrl: './cotisation-checklist.component.scss',
 })
 export class CotisationChecklistComponent {
   @Input({ required: true }) cotisations: Cotisation[] = [];

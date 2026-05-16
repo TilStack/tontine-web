@@ -1,0 +1,9 @@
+.checklist {
+  &__icon--paid {
+    color: var(--color-success);
+  }
+
+  &__icon--unpaid {
+    color: var(--color-error);
+  }
+}

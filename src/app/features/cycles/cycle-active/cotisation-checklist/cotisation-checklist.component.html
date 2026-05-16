@@ -2,7 +2,9 @@
   @for (member of members; track member.uid) {
     @let cot = getCotisation(member.uid);
     <mat-list-item>
-      <mat-icon matListItemIcon [style.color]="cot?.paid ? 'green' : 'red'">
+      <mat-icon matListItemIcon
+        [class.checklist__icon--paid]="cot?.paid"
+        [class.checklist__icon--unpaid]="!cot?.paid">
         {{ cot?.paid ? 'check_circle' : 'cancel' }}
       </mat-icon>
       <span matListItemTitle>{{ member.displayName }}</span>
