@@ -3,11 +3,14 @@ import { toSignal } from '@angular/core/rxjs-interop';
 import { from, of, switchMap, combineLatest, map } from 'rxjs';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatButton } from '@angular/material/button';
-import { MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef, MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow } from '@angular/material/table';
+import {
+  MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef,
+  MatCellDef, MatRowDef, MatHeaderCell, MatCell, MatHeaderRow, MatRow,
+} from '@angular/material/table';
 import { MatIcon } from '@angular/material/icon';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatDialog } from '@angular/material/dialog';
-import { DecimalPipe, DatePipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
+import { FcfaPipe } from '../../../core/pipes/fcfa.pipe';
 import { AuthService } from '../../../core/services/auth.service';
 import { CaisseService } from '../../../core/services/caisse.service';
 import { AddTransactionDialogComponent } from './add-transaction-dialog/add-transaction-dialog.component';
@@ -20,10 +23,11 @@ import { AddTransactionDialogComponent } from './add-transaction-dialog/add-tran
     MatButton,
     MatTable, MatColumnDef, MatHeaderCellDef, MatHeaderRowDef, MatCellDef, MatRowDef,
     MatHeaderCell, MatCell, MatHeaderRow, MatRow,
-    MatIcon, MatProgressSpinner,
-    DecimalPipe, DatePipe,
+    MatIcon,
+    DatePipe, FcfaPipe,
   ],
   templateUrl: './caisse.component.html',
+  styleUrl: './caisse.component.scss',
 })
 export class CaisseComponent {
   private auth = inject(AuthService);

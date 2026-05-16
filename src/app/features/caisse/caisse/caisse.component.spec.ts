@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { MatDialog } from '@angular/material/dialog';
 import { NoopAnimationsModule } from '@angular/platform-browser/animations';
-import { of } from 'rxjs';
+import { NEVER, of } from 'rxjs';
 import { CaisseComponent } from './caisse.component';
 import { CaisseService } from '../../../core/services/caisse.service';
 import { AuthService } from '../../../core/services/auth.service';
@@ -27,65 +27,82 @@ const mockTx: TransactionDoc = {
 };
 
 describe('CaisseComponent', () => {
-  let component: CaisseComponent;
-  let fixture: ComponentFixture<CaisseComponent>;
-  let authMock: { getClaims: jest.Mock };
-  let caisseMock: { watchCaisse: jest.Mock; watchTransactions: jest.Mock };
-  let dialogMock: { open: jest.Mock };
-
-  const createComponent = async (transactions: TransactionDoc[] = []) => {
-    caisseMock.watchTransactions.mockReturnValue(of(transactions));
-    fixture = TestBed.createComponent(CaisseComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-    await fixture.whenStable();
-    fixture.detectChanges();
-  };
-
-  beforeEach(async () => {
-    authMock = { getClaims: jest.fn().mockResolvedValue({ deptId: 'dept-1' }) };
-    caisseMock = {
-      watchCaisse: jest.fn().mockReturnValue(of(mockCaisse)),
-      watchTransactions: jest.fn().mockReturnValue(of([])),
-    };
-    dialogMock = { open: jest.fn() };
-
-    await TestBed.configureTestingModule({
+  it('shows skeleton (.caisse-loading) when data is pending', () => {
+    TestBed.configureTestingModule({
       imports: [CaisseComponent, NoopAnimationsModule],
       providers: [
-        { provide: AuthService, useValue: authMock },
-        { provide: CaisseService, useValue: caisseMock },
-        { provide: MatDialog, useValue: dialogMock },
+        { provide: AuthService, useValue: { getClaims: () => NEVER } },
+        { provide: CaisseService, useValue: {} },
+        { provide: MatDialog, useValue: {} },
       ],
-    }).compileComponents();
+    });
+    const f = TestBed.createComponent(CaisseComponent);
+    f.detectChanges();
+    expect(f.nativeElement.querySelector('.caisse-loading')).toBeTruthy();
+    expect(f.nativeElement.querySelector('.caisse-container')).toBeNull();
   });
 
-  it('should be created', async () => {
-    await createComponent();
-    expect(component).toBeTruthy();
-  });
+  describe('loaded state', () => {
+    let component: CaisseComponent;
+    let fixture: ComponentFixture<CaisseComponent>;
+    let authMock: { getClaims: jest.Mock };
+    let caisseMock: { watchCaisse: jest.Mock; watchTransactions: jest.Mock };
+    let dialogMock: { open: jest.Mock };
 
-  it('should display solde from caisse doc', async () => {
-    await createComponent();
-    const el: HTMLElement = fixture.nativeElement;
-    expect(el.textContent).toContain('15');
-  });
+    const createComponent = async (transactions: TransactionDoc[] = []) => {
+      caisseMock.watchTransactions.mockReturnValue(of(transactions));
+      fixture = TestBed.createComponent(CaisseComponent);
+      component = fixture.componentInstance;
+      fixture.detectChanges();
+      await fixture.whenStable();
+      fixture.detectChanges();
+    };
 
-  it('should show empty state when no transactions', async () => {
-    await createComponent([]);
-    const el: HTMLElement = fixture.nativeElement;
-    expect(el.textContent).toContain('Aucune dépense enregistrée');
-  });
+    beforeEach(async () => {
+      authMock = { getClaims: jest.fn().mockResolvedValue({ deptId: 'dept-1' }) };
+      caisseMock = {
+        watchCaisse: jest.fn().mockReturnValue(of(mockCaisse)),
+        watchTransactions: jest.fn().mockReturnValue(of([])),
+      };
+      dialogMock = { open: jest.fn() };
 
-  it('should show transaction row when transactions exist', async () => {
-    await createComponent([mockTx]);
-    const el: HTMLElement = fixture.nativeElement;
-    expect(el.textContent).toContain('Nourriture');
-  });
+      await TestBed.configureTestingModule({
+        imports: [CaisseComponent, NoopAnimationsModule],
+        providers: [
+          { provide: AuthService, useValue: authMock },
+          { provide: CaisseService, useValue: caisseMock },
+          { provide: MatDialog, useValue: dialogMock },
+        ],
+      }).compileComponents();
+    });
 
-  it('openAddDialog() should open AddTransactionDialogComponent', async () => {
-    await createComponent();
-    component.openAddDialog();
-    expect(dialogMock.open).toHaveBeenCalled();
+    it('should be created', async () => {
+      await createComponent();
+      expect(component).toBeTruthy();
+    });
+
+    it('should display solde from caisse doc', async () => {
+      await createComponent();
+      const el: HTMLElement = fixture.nativeElement;
+      expect(el.textContent).toContain('15');
+    });
+
+    it('should show empty state when no transactions', async () => {
+      await createComponent([]);
+      const el: HTMLElement = fixture.nativeElement;
+      expect(el.textContent).toContain('Aucune dépense enregistrée');
+    });
+
+    it('should show transaction row when transactions exist', async () => {
+      await createComponent([mockTx]);
+      const el: HTMLElement = fixture.nativeElement;
+      expect(el.textContent).toContain('Nourriture');
+    });
+
+    it('openAddDialog() should open AddTransactionDialogComponent', async () => {
+      await createComponent();
+      component.openAddDialog();
+      expect(dialogMock.open).toHaveBeenCalled();
+    });
   });
 });

@@ -1,0 +1,77 @@
+@use 'app/core/styles/mixins' as m;
+
+.caisse-loading {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.caisse__skeleton-card {
+  height: 120px;
+  border-radius: var(--radius-lg);
+}
+
+.caisse__skeleton-btn {
+  height: 40px;
+  width: 200px;
+  border-radius: var(--radius-md);
+}
+
+.caisse__skeleton-row {
+  height: 48px;
+}
+
+.caisse-container {
+  padding: var(--space-4);
+}
+
+.caisse__summary-card {
+  margin-bottom: var(--space-4);
+}
+
+.caisse__summary-label {
+  font-size: var(--font-size-sm);
+  color: var(--color-text-secondary);
+  margin: 0 0 var(--space-1);
+}
+
+.caisse__summary-solde {
+  font-size: 28px;
+  font-weight: 700;
+  color: var(--color-text);
+  margin: 0 0 var(--space-2);
+}
+
+.caisse__summary-meta {
+  font-size: var(--font-size-xs);
+  color: var(--color-text-secondary);
+  margin: 0;
+}
+
+.caisse__actions {
+  margin-bottom: var(--space-3);
+}
+
+.caisse__empty-msg {
+  margin: 0;
+  color: var(--color-text-secondary);
+}
+
+.caisse__error-msg {
+  padding: var(--space-4);
+  color: var(--color-error);
+}
+
+.caisse__table-wrapper {
+  overflow-x: auto;
+}
+
+.caisse__table {
+  width: 100%;
+}
+
+.caisse__montant-cell {
+  color: var(--color-error);
+  font-weight: 500;
+}
