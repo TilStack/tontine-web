@@ -42,6 +42,7 @@ import { SaisonMode } from '../../../core/models/saison.model';
     MatListItem,
   ],
   templateUrl: './saison-setup.component.html',
+  styleUrl: './saison-setup.component.scss',
 })
 export class SaisonSetupComponent implements OnInit {
   private auth = inject(AuthService);

@@ -46,7 +46,7 @@
       }
 
       @if (error()) {
-        <p class="error">{{ error() }}</p>
+        <p class="alert-error">{{ error() }}</p>
       }
 
       <button mat-raised-button color="primary" type="submit" [disabled]="form.invalid || loading()">
