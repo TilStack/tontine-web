@@ -1,11 +1,11 @@
 export const environment = {
   production: false,
   firebase: {
-    apiKey: 'REPLACE_ME',
-    authDomain: 'REPLACE_ME.firebaseapp.com',
-    projectId: 'REPLACE_ME',
-    storageBucket: 'REPLACE_ME.appspot.com',
-    messagingSenderId: 'REPLACE_ME',
-    appId: 'REPLACE_ME',
+    apiKey: 'AIzaSyCx22dZKFBtqXhTqHDEm4mCTjYte3at09c',
+    authDomain: 'tontine-web.firebaseapp.com',
+    projectId: 'tontine-web',
+    storageBucket: 'tontine-web.firebasestorage.app',
+    messagingSenderId: '358581811705',
+    appId: '1:358581811705:web:05656c0d3a25ec45c2e528',
   },
 };
