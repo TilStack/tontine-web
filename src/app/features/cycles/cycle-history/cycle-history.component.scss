@@ -1,0 +1,72 @@
+@use 'app/core/styles/mixins' as m;
+
+.history-loading {
+  padding: var(--space-4);
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+}
+
+.history__skeleton-title {
+  height: 28px;
+  width: 40%;
+  max-width: 240px;
+}
+
+.history__skeleton-row {
+  height: 48px;
+}
+
+.history-content {
+  padding: var(--space-4);
+}
+
+.history__title {
+  margin-bottom: var(--space-4);
+}
+
+.history__icon--confirmed {
+  color: var(--color-success);
+}
+
+.history__icon--pending {
+  color: var(--color-warning);
+}
+
+.history__table-wrapper {
+  display: none;
+
+  @include m.desktop {
+    display: block;
+  }
+}
+
+.history__table {
+  width: 100%;
+}
+
+.history__mobile-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+
+  @include m.desktop {
+    display: none;
+  }
+}
+
+.history__mobile-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+}
+
+.history__mobile-row {
+  @include m.flex-between;
+  font-size: var(--font-size-sm);
+}
+
+.history__mobile-label {
+  color: var(--color-text-secondary);
+  font-weight: 500;
+}
