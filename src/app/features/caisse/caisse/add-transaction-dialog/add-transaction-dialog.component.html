@@ -1,8 +1,8 @@
 <h2 mat-dialog-title>Ajouter une dépense</h2>
 
 <mat-dialog-content>
-  <form [formGroup]="form">
-    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 8px;">
+  <form [formGroup]="form" class="add-tx__form">
+    <mat-form-field appearance="outline" class="add-tx__field">
       <mat-label>Montant (FCFA)</mat-label>
       <input matInput type="number" formControlName="montant" min="1" />
       @if (form.get('montant')?.hasError('required') && form.get('montant')?.touched) {
@@ -13,7 +13,7 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline" style="width: 100%; margin-bottom: 8px;">
+    <mat-form-field appearance="outline" class="add-tx__field">
       <mat-label>Catégorie</mat-label>
       <mat-select formControlName="categorie">
         @for (cat of categories; track cat.value) {
@@ -25,13 +25,13 @@
       }
     </mat-form-field>
 
-    <mat-form-field appearance="outline" style="width: 100%;">
+    <mat-form-field appearance="outline" class="add-tx__field">
       <mat-label>Libellé (optionnel)</mat-label>
       <input matInput formControlName="libelle" maxlength="200" />
     </mat-form-field>
 
     @if (error()) {
-      <p style="color: #f44336; margin-top: 8px; font-size: 14px;">{{ error() }}</p>
+      <p class="alert-error">{{ error() }}</p>
     }
   </form>
 </mat-dialog-content>

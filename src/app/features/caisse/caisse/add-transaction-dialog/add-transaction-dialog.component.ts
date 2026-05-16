@@ -37,6 +37,7 @@ export interface AddTransactionDialogData {
     MatButton,
   ],
   templateUrl: './add-transaction-dialog.component.html',
+  styleUrl: './add-transaction-dialog.component.scss',
 })
 export class AddTransactionDialogComponent {
   private fb = inject(FormBuilder);
