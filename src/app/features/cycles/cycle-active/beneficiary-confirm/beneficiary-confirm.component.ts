@@ -1,37 +1,22 @@
-import {
-  Component,
-  Input,
-  Output,
-  EventEmitter,
-  signal,
-  inject,
-} from '@angular/core';
+import { Component, Input, Output, EventEmitter, signal, inject } from '@angular/core';
 import { MatButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import {
-  MatCard,
-  MatCardContent,
-  MatCardHeader,
-  MatCardTitle,
-  MatCardActions,
+  MatCard, MatCardContent, MatCardHeader, MatCardTitle, MatCardActions,
 } from '@angular/material/card';
-import { DecimalPipe } from '@angular/common';
+import { FcfaPipe } from '../../../../core/pipes/fcfa.pipe';
 import { CycleService } from '../../../../core/services/cycle.service';
 
 @Component({
   selector: 'app-beneficiary-confirm',
   standalone: true,
   imports: [
-    MatButton,
-    MatProgressSpinner,
-    MatCard,
-    MatCardContent,
-    MatCardHeader,
-    MatCardTitle,
-    MatCardActions,
-    DecimalPipe,
+    MatButton, MatProgressSpinner,
+    MatCard, MatCardContent, MatCardHeader, MatCardTitle, MatCardActions,
+    FcfaPipe,
   ],
   templateUrl: './beneficiary-confirm.component.html',
+  styleUrl: './beneficiary-confirm.component.scss',
 })
 export class BeneficiaryConfirmComponent {
   @Input({ required: true }) saisonId!: string;

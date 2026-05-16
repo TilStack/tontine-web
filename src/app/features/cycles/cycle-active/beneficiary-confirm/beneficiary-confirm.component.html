@@ -1,18 +1,18 @@
-<mat-card>
+<mat-card class="beneficiary-confirm">
   <mat-card-header>
     <mat-card-title>Vous êtes le bénéficiaire de ce cycle</mat-card-title>
   </mat-card-header>
   <mat-card-content>
-    <p>Montant reçu : <strong>{{ montantVerse | number }} FCFA</strong></p>
+    <p>Montant reçu : <strong>{{ montantVerse | fcfa }}</strong></p>
     <p>Confirmez la réception pour permettre l'ouverture du prochain cycle.</p>
     @if (error()) {
-      <p class="error">{{ error() }}</p>
+      <p class="alert-error">{{ error() }}</p>
     }
   </mat-card-content>
   <mat-card-actions>
     <button
       mat-raised-button
-      color="accent"
+      color="primary"
       [disabled]="loading()"
       (click)="confirm()"
     >
