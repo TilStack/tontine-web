@@ -1,7 +1,10 @@
-<div class="cycle-active-container">
-  @if (!ctx()) {
-    <mat-spinner />
-  } @else if (!ctx()!.saison) {
+@if (!ctx()) {
+  <div class="cycle-active-loading">
+    <div class="skeleton cycle-active__skeleton-title"></div>
+    <div class="skeleton cycle-active__skeleton-card"></div>
+  </div>
+} @else if (!ctx()!.saison) {
+  <div class="cycle-active-content">
     <mat-card>
       <mat-card-content>
         <p>Aucune saison en cours.</p>
@@ -12,21 +15,27 @@
         }
       </mat-card-content>
     </mat-card>
-  } @else {
+  </div>
+} @else {
+  <div class="cycle-active-content">
     @let saison = ctx()!.saison!;
     @let cycleData = ctx()!.cycleData;
 
-    <h2>
+    <h2 class="cycle-active__title">
       Saison en cours —
       {{ saison.mode === "lottery" ? "Tirage au sort" : "Rotation fixe" }}
     </h2>
 
     @if (!cycleData) {
-      <mat-spinner />
+      <div class="cycle-active__inner-skeleton">
+        <div class="skeleton cycle-active__skeleton-line"></div>
+        <div class="skeleton cycle-active__skeleton-line cycle-active__skeleton-line--short"></div>
+        <div class="skeleton cycle-active__skeleton-line"></div>
+      </div>
     } @else {
       @let cycle = cycleData.cycle;
 
-      <mat-card>
+      <mat-card class="cycle-active__card">
         <mat-card-header>
           <mat-card-title>
             Cycle {{ cycle.index }} / {{ saison.totalCycles }}
@@ -41,29 +50,27 @@
             Cotisations : {{ cycle.totalPaid }} /
             {{ saison.totalCycles }} membres
           </p>
-          <p>Montant versé : {{ cycle.montantVerse | number }} FCFA</p>
+          <p>Montant versé : {{ cycle.montantVerse | fcfa }}</p>
 
-          <mat-chip-set>
-            <mat-chip
-              [color]="cycle.status === 'open' ? 'primary' : 'warn'"
-              highlighted
+          <div class="cycle-active__badges">
+            <span
+              [class.badge-success]="cycle.status === 'open'"
+              [class.badge-neutral]="cycle.status !== 'open'"
             >
               {{ cycle.status === "open" ? "Ouvert" : "Fermé" }}
-            </mat-chip>
+            </span>
             @if (cycle.status === "closed" && cycle.closedBy) {
-              <mat-chip>Clôturé par {{ cycle.closedBy }}</mat-chip>
+              <span class="badge-neutral">Clôturé par {{ cycle.closedBy }}</span>
             }
             @if (cycle.confirmedAt) {
-              <mat-chip color="accent" highlighted
-                >Réception confirmée</mat-chip
-              >
+              <span class="badge-success">Réception confirmée</span>
             }
-          </mat-chip-set>
+          </div>
         </mat-card-content>
 
         <mat-card-actions>
           @if (actionError()) {
-            <p class="error">{{ actionError() }}</p>
+            <p class="alert-error">{{ actionError() }}</p>
           }
 
           @if (canForceClose()) {
@@ -71,7 +78,7 @@
               mat-stroked-button
               color="warn"
               [disabled]="actionLoading()"
-              (click)="onForceClose()"
+              (click)="confirmForceClose()"
             >
               Forcer la clôture
             </button>
@@ -110,5 +117,5 @@
         (markPaid)="onMarkPaid($event)"
       />
     }
-  }
-</div>
+  </div>
+}

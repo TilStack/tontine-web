@@ -2,7 +2,6 @@ import { Component, inject, signal, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
 import { from, of, switchMap, map, combineLatest } from 'rxjs';
 import { MatButton } from '@angular/material/button';
-import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import {
   MatCard,
   MatCardContent,
@@ -11,15 +10,17 @@ import {
   MatCardActions,
   MatCardSubtitle,
 } from '@angular/material/card';
-import { MatChip, MatChipSet } from '@angular/material/chips';
 import { RouterLink } from '@angular/router';
-import { DatePipe, DecimalPipe } from '@angular/common';
+import { DatePipe } from '@angular/common';
+import { MatDialog } from '@angular/material/dialog';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
 import { SaisonService } from '../../../core/services/saison.service';
 import { CycleService } from '../../../core/services/cycle.service';
+import { FcfaPipe } from '../../../core/pipes/fcfa.pipe';
 import { CotisationChecklistComponent } from './cotisation-checklist/cotisation-checklist.component';
 import { BeneficiaryConfirmComponent } from './beneficiary-confirm/beneficiary-confirm.component';
+import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { UserProfile } from '../../../core/models/user.model';
 
 @Component({
@@ -27,28 +28,27 @@ import { UserProfile } from '../../../core/models/user.model';
   standalone: true,
   imports: [
     MatButton,
-    MatProgressSpinner,
     MatCard,
     MatCardContent,
     MatCardHeader,
     MatCardTitle,
     MatCardSubtitle,
     MatCardActions,
-    MatChip,
-    MatChipSet,
     RouterLink,
     DatePipe,
-    DecimalPipe,
+    FcfaPipe,
     CotisationChecklistComponent,
     BeneficiaryConfirmComponent,
   ],
   templateUrl: './cycle-active.component.html',
+  styleUrl: './cycle-active.component.scss',
 })
 export class CycleActiveComponent {
   private auth = inject(AuthService);
   private userService = inject(UserService);
   private saisonService = inject(SaisonService);
   private cycleService = inject(CycleService);
+  private dialog = inject(MatDialog);
 
   markingUid = signal<string | null>(null);
   actionLoading = signal(false);
@@ -58,42 +58,21 @@ export class CycleActiveComponent {
     switchMap((claims) => {
       if (!claims?.deptId) return of(null);
       const deptId = claims.deptId;
-
+      const uid = this.auth.currentUser?.uid;
       return combineLatest([
         this.saisonService.watchActiveSaison(deptId),
         this.userService.watchAllMembers(deptId),
-        from(this.auth.getClaims()).pipe(
-          switchMap((c) =>
-            c?.deptId && this.auth.currentUser?.uid
-              ? this.userService.watchProfile(
-                  c.deptId,
-                  this.auth.currentUser.uid,
-                )
-              : of(undefined),
-          ),
-        ),
+        uid
+          ? this.userService.watchProfile(deptId, uid)
+          : of(undefined),
       ]).pipe(
         switchMap(([saison, members, myProfile]) => {
           if (!saison) {
-            return of({
-              deptId,
-              saison: null,
-              cycleData: null,
-              members,
-              myProfile,
-            });
+            return of({ deptId, saison: null, cycleData: null, members, myProfile });
           }
           return this.cycleService
             .watchCurrentCycle(deptId, saison.id, saison.currentCycleIndex)
-            .pipe(
-              map((cycleData) => ({
-                deptId,
-                saison,
-                cycleData,
-                members,
-                myProfile,
-              })),
-            );
+            .pipe(map((cycleData) => ({ deptId, saison, cycleData, members, myProfile })));
         }),
       );
     }),
@@ -131,6 +110,20 @@ export class CycleActiveComponent {
       cycle.confirmedAt === null
     );
   });
+
+  confirmForceClose(): void {
+    this.dialog.open(ConfirmDialogComponent, {
+      data: {
+        title: 'Forcer la clôture du cycle',
+        message: "Êtes-vous sûr ? Les membres n'ayant pas payé seront pénalisés.",
+        confirmLabel: 'Forcer la clôture',
+        confirmColor: 'error',
+      } satisfies ConfirmDialogData,
+      width: '420px',
+    }).afterClosed().subscribe((confirmed: boolean | undefined) => {
+      if (confirmed) this.onForceClose();
+    });
+  }
 
   async onMarkPaid(uid: string): Promise<void> {
     const ctx = this.ctx();
@@ -177,9 +170,7 @@ export class CycleActiveComponent {
         cycleId: ctx.cycleData.cycle.id,
       });
     } catch (err: any) {
-      this.actionError.set(
-        err?.message ?? "Erreur lors de l'ouverture du cycle.",
-      );
+      this.actionError.set(err?.message ?? "Erreur lors de l'ouverture du cycle.");
     } finally {
       this.actionLoading.set(false);
     }
@@ -187,8 +178,7 @@ export class CycleActiveComponent {
 
   getMemberName(uid: string): string {
     return (
-      this.ctx()?.members?.find((m: UserProfile) => m.uid === uid)
-        ?.displayName ?? uid
+      this.ctx()?.members?.find((m: UserProfile) => m.uid === uid)?.displayName ?? uid
     );
   }
 }
