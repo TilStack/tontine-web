@@ -97,7 +97,7 @@ export class CycleActiveComponent {
     const ctx = this.ctx();
     if (ctx?.myProfile?.role !== 'admin') return false;
     const cycle = ctx?.cycleData?.cycle;
-    return cycle?.status === 'closed' && cycle.confirmedAt !== null;
+    return cycle?.status === 'closed' && !!cycle.confirmedAt;
   });
 
   showBeneficiaryConfirm = computed(() => {
