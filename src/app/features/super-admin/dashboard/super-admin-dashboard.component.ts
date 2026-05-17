@@ -1,34 +1,39 @@
-import { Component, inject } from '@angular/core';
+import { Component, inject, computed } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
 import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
-import { MatSidenav, MatSidenavContainer, MatSidenavContent } from '@angular/material/sidenav';
+import {
+  MatSidenav,
+  MatSidenavContainer,
+  MatSidenavContent,
+} from '@angular/material/sidenav';
 import { MatNavList, MatListItem } from '@angular/material/list';
 import { MatButton } from '@angular/material/button';
 import { AuthService } from '../../../core/services/auth.service';
+import { SuperAdminService } from '../super-admin.service';
 
 @Component({
   selector: 'app-super-admin-dashboard',
   standalone: true,
-  imports: [RouterOutlet, RouterLink, RouterLinkActive, MatSidenav, MatSidenavContainer, MatSidenavContent, MatNavList, MatListItem, MatButton],
-  template: `
-    <mat-sidenav-container style="height: 100vh">
-      <mat-sidenav mode="side" opened style="width: 200px; padding: 16px">
-        <h3>Super Admin</h3>
-        <mat-nav-list>
-          <a mat-list-item routerLink="requests" routerLinkActive="active-link">
-            Demandes de département
-          </a>
-        </mat-nav-list>
-        <button mat-stroked-button (click)="logout()" style="margin-top: auto">
-          Déconnexion
-        </button>
-      </mat-sidenav>
-      <mat-sidenav-content style="padding: 24px">
-        <router-outlet />
-      </mat-sidenav-content>
-    </mat-sidenav-container>
-  `,
+  imports: [
+    RouterOutlet, RouterLink, RouterLinkActive,
+    MatSidenav, MatSidenavContainer, MatSidenavContent,
+    MatNavList, MatListItem,
+    MatButton,
+  ],
+  templateUrl: './super-admin-dashboard.component.html',
+  styleUrl: './super-admin-dashboard.component.scss',
 })
 export class SuperAdminDashboardComponent {
   private auth = inject(AuthService);
-  logout(): void { this.auth.logout(); }
+  private saService = inject(SuperAdminService);
+
+  private departments = toSignal(this.saService.watchDepartments(), { initialValue: [] });
+  private requests = toSignal(this.saService.watchPendingRequests(), { initialValue: [] });
+
+  deptCount = computed(() => this.departments().length);
+  pendingCount = computed(() => this.requests().length);
+
+  logout(): void {
+    this.auth.logout();
+  }
 }

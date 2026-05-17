@@ -1,0 +1,33 @@
+<mat-sidenav-container class="sa-dashboard">
+  <mat-sidenav mode="side" opened class="sa-dashboard__nav">
+    <p class="sa-dashboard__brand">Super Admin</p>
+    <mat-nav-list>
+      <a
+        mat-list-item
+        routerLink="departments"
+        routerLinkActive="sa-dashboard__nav-item--active">
+        <span class="sa-dashboard__nav-label">
+          Départements
+          <span class="sa-nav__badge">{{ deptCount() }}</span>
+        </span>
+      </a>
+      <a
+        mat-list-item
+        routerLink="requests"
+        routerLinkActive="sa-dashboard__nav-item--active">
+        <span class="sa-dashboard__nav-label">
+          Demandes
+          @if (pendingCount() > 0) {
+            <span class="sa-nav__badge sa-nav__badge--alert">{{ pendingCount() }}</span>
+          }
+        </span>
+      </a>
+    </mat-nav-list>
+    <button mat-stroked-button class="sa-dashboard__logout" (click)="logout()">
+      Déconnexion
+    </button>
+  </mat-sidenav>
+  <mat-sidenav-content class="sa-dashboard__content">
+    <router-outlet />
+  </mat-sidenav-content>
+</mat-sidenav-container>
