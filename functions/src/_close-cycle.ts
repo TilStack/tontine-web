@@ -1,6 +1,6 @@
 // functions/src/_close-cycle.ts
-import * as admin from 'firebase-admin';
-import { notifyKittyComplete, notifyLatePayment } from './_notify.js';
+import * as admin from "firebase-admin";
+import {notifyKittyComplete, notifyLatePayment} from "./_notify.js";
 
 /**
  * Ferme atomiquement un cycle via une transaction Firestore unique.
@@ -12,7 +12,7 @@ export async function closeCycle(
   deptId: string,
   saisonId: string,
   cycleId: string,
-  closedBy: 'auto' | 'admin' | 'cron'
+  closedBy: "auto" | "admin" | "cron"
 ): Promise<void> {
   const saisonRef = db.doc(`departments/${deptId}/saisons/${saisonId}`);
   const cycleRef = db.doc(`departments/${deptId}/saisons/${saisonId}/cycles/${cycleId}`);
@@ -29,15 +29,15 @@ export async function closeCycle(
     ]);
 
     // Anti-double-execution guard
-    if (!cycleSnap.exists || cycleSnap.data()!.status === 'closed') return null;
+    if (!cycleSnap.exists || cycleSnap.data()!.status === "closed") return null;
 
     const cycle = cycleSnap.data()!;
     const saison = saisonSnap.data()!;
     const now = admin.firestore.Timestamp.now();
 
-    const totalPaid: number = cycle['totalPaid'];
-    const memberCount: number = saison['totalCycles'];
-    const montantCotisation: number = saison['montantCotisation'];
+    const totalPaid: number = cycle["totalPaid"];
+    const memberCount: number = saison["totalCycles"];
+    const montantCotisation: number = saison["montantCotisation"];
 
     const montantVerse = totalPaid * montantCotisation;
     const montantCaisse = (memberCount - totalPaid) * montantCotisation;
@@ -45,7 +45,7 @@ export async function closeCycle(
     // Identify unpaid members and penalize them
     const penalizedUids: string[] = [];
     cotisationsSnap.forEach((docSnap) => {
-      if (!docSnap.data()['paid']) {
+      if (!docSnap.data()["paid"]) {
         penalizedUids.push(docSnap.id);
         txn.update(docSnap.ref, {
           penalized: true,
@@ -55,7 +55,7 @@ export async function closeCycle(
     });
 
     // Reorder memberOrder: non-penalized first (relative order preserved), then penalized
-    const currentOrder: string[] = saison['memberOrder'];
+    const currentOrder: string[] = saison["memberOrder"];
     const newOrder = [
       ...currentOrder.filter((uid) => !penalizedUids.includes(uid)),
       ...penalizedUids,
@@ -63,7 +63,7 @@ export async function closeCycle(
 
     // Update cycle
     txn.update(cycleRef, {
-      status: 'closed',
+      status: "closed",
       closedAt: now,
       closedBy,
       montantVerse,
@@ -71,10 +71,10 @@ export async function closeCycle(
     });
 
     // Update saison memberOrder (and optionally mark completed)
-    const saisonUpdate: Record<string, unknown> = { memberOrder: newOrder };
-    if (cycle['index'] === saison['totalCycles']) {
-      saisonUpdate['status'] = 'completed';
-      saisonUpdate['completedAt'] = now;
+    const saisonUpdate: Record<string, unknown> = {memberOrder: newOrder};
+    if (cycle["index"] === saison["totalCycles"]) {
+      saisonUpdate["status"] = "completed";
+      saisonUpdate["completedAt"] = now;
     }
     txn.update(saisonRef, saisonUpdate);
 
@@ -88,15 +88,15 @@ export async function closeCycle(
         totalSorties: admin.firestore.FieldValue.increment(0),
         updatedAt: admin.firestore.FieldValue.serverTimestamp(),
       },
-      { merge: true }
+      {merge: true}
     );
 
     return {
       penalizedUids,
       newOrder,
-      beneficiaryUid: cycle['beneficiaryUid'] as string,
+      beneficiaryUid: cycle["beneficiaryUid"] as string,
       montantVerse,
-      cycleIndex: cycle['index'] as number,
+      cycleIndex: cycle["index"] as number,
     };
   });
 
@@ -107,19 +107,19 @@ export async function closeCycle(
   const usersSnap = await db.collection(`departments/${deptId}/users`).get();
   const adminUids: string[] = [];
   const bureauUids: string[] = [];
-  const adminEmails: string[] = [];  // combined admin + bureau emails
-  let beneficiaryEmail = '';
+  const adminEmails: string[] = []; // combined admin + bureau emails
+  let beneficiaryEmail = "";
   const penalizedEmails: Record<string, string> = {};
 
   usersSnap.forEach((doc) => {
     const data = doc.data();
-    const email = data['email'] as string;
-    const role = data['role'] as string;
-    if (role === 'admin') {
+    const email = data["email"] as string;
+    const role = data["role"] as string;
+    if (role === "admin") {
       adminUids.push(doc.id);
       adminEmails.push(email);
     }
-    if (role === 'bureau') {
+    if (role === "bureau") {
       bureauUids.push(doc.id);
       adminEmails.push(email);
     }
@@ -134,7 +134,7 @@ export async function closeCycle(
   });
 
   // closedBy === 'auto' means everyone paid → kitty complete (zero penalized)
-  if (closedBy === 'auto') {
+  if (closedBy === "auto") {
     await notifyKittyComplete({
       db,
       deptId,

@@ -1,39 +1,39 @@
-import * as admin from 'firebase-admin';
-import { onCall, HttpsError } from 'firebase-functions/v2/https';
+import * as admin from "firebase-admin";
+import {onCall, HttpsError} from "firebase-functions/v2/https";
 
 export const createManagedUser = onCall(async (request) => {
   if (!request.auth) {
-    throw new HttpsError('unauthenticated', 'Authentification requise.');
+    throw new HttpsError("unauthenticated", "Authentification requise.");
   }
 
-  const callerDeptId = request.auth.token['deptId'] as string | undefined;
+  const callerDeptId = request.auth.token["deptId"] as string | undefined;
   if (!callerDeptId) {
-    throw new HttpsError('permission-denied', 'Pas de département associé.');
+    throw new HttpsError("permission-denied", "Pas de département associé.");
   }
 
   const callerDoc = await admin
     .firestore()
-    .collection('departments')
+    .collection("departments")
     .doc(callerDeptId)
-    .collection('users')
+    .collection("users")
     .doc(request.auth.uid)
     .get();
 
-  if (callerDoc.data()?.['role'] !== 'admin') {
-    throw new HttpsError('permission-denied', 'Réservé aux admins de département.');
+  if (callerDoc.data()?.["role"] !== "admin") {
+    throw new HttpsError("permission-denied", "Réservé aux admins de département.");
   }
 
-  const { email, displayName, role } = request.data as {
+  const {email, displayName, role} = request.data as {
     email: string;
     displayName: string;
-    role: 'bureau' | 'membre';
+    role: "bureau" | "membre";
   };
 
   if (!email || !displayName || !role) {
-    throw new HttpsError('invalid-argument', 'email, displayName et role requis.');
+    throw new HttpsError("invalid-argument", "email, displayName et role requis.");
   }
 
-  const tempPassword = Math.random().toString(36).slice(-10) + 'A1!';
+  const tempPassword = Math.random().toString(36).slice(-10) + "A1!";
 
   const userRecord = await admin.auth().createUser({
     email,
@@ -41,14 +41,14 @@ export const createManagedUser = onCall(async (request) => {
     password: tempPassword,
   });
 
-  await admin.auth().setCustomUserClaims(userRecord.uid, { deptId: callerDeptId });
+  await admin.auth().setCustomUserClaims(userRecord.uid, {deptId: callerDeptId});
 
   const now = admin.firestore.Timestamp.now();
   await admin
     .firestore()
-    .collection('departments')
+    .collection("departments")
     .doc(callerDeptId)
-    .collection('users')
+    .collection("users")
     .doc(userRecord.uid)
     .set({
       displayName,
@@ -63,5 +63,5 @@ export const createManagedUser = onCall(async (request) => {
   const resetLink = await admin.auth().generatePasswordResetLink(email);
   console.log(`Reset link for ${email}: ${resetLink}`);
 
-  return { uid: userRecord.uid, resetLink };
+  return {uid: userRecord.uid, resetLink};
 });

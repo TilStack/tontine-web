@@ -1,13 +1,13 @@
 // functions/src/j5-reminder-cron.ts
-import * as admin from 'firebase-admin';
-import { onSchedule } from 'firebase-functions/v2/scheduler';
-import * as logger from 'firebase-functions/logger';
-import { notifyJ5 } from './_notify.js';
+import * as admin from "firebase-admin";
+import {onSchedule} from "firebase-functions/v2/scheduler";
+import * as logger from "firebase-functions/logger";
+import {notifyJ5} from "./_notify.js";
 
 export const j5RemindCron = onSchedule(
   {
-    schedule: '0 7 * * *',  // 07:00 UTC = 08:00 Africa/Douala (UTC+1, no DST)
-    timeZone: 'UTC',
+    schedule: "0 7 * * *", // 07:00 UTC = 08:00 Africa/Douala (UTC+1, no DST)
+    timeZone: "UTC",
   },
   async () => {
     const db = admin.firestore();
@@ -23,14 +23,14 @@ export const j5RemindCron = onSchedule(
     windowEnd.setUTCDate(windowEnd.getUTCDate() + 1);
 
     const snapshot = await db
-      .collectionGroup('cycles')
-      .where('status', '==', 'open')
-      .where('deadline', '>=', admin.firestore.Timestamp.fromDate(windowStart))
-      .where('deadline', '<', admin.firestore.Timestamp.fromDate(windowEnd))
+      .collectionGroup("cycles")
+      .where("status", "==", "open")
+      .where("deadline", ">=", admin.firestore.Timestamp.fromDate(windowStart))
+      .where("deadline", "<", admin.firestore.Timestamp.fromDate(windowEnd))
       .get();
 
     if (snapshot.empty) {
-      logger.info('j5RemindCron: aucun cycle à notifier.');
+      logger.info("j5RemindCron: aucun cycle à notifier.");
       return;
     }
 
@@ -38,7 +38,7 @@ export const j5RemindCron = onSchedule(
 
     const tasks = snapshot.docs.map(async (cycleDoc) => {
       // Path: departments/{deptId}/saisons/{saisonId}/cycles/{cycleId}
-      const pathSegments = cycleDoc.ref.path.split('/');
+      const pathSegments = cycleDoc.ref.path.split("/");
       const deptId = pathSegments[1];
       const saisonId = pathSegments[3];
       const cycleId = pathSegments[5];
@@ -54,7 +54,7 @@ export const j5RemindCron = onSchedule(
 
         const unpaidUids: string[] = [];
         cotisationsSnap.forEach((doc) => {
-          if (!doc.data()['paid']) unpaidUids.push(doc.id);
+          if (!doc.data()["paid"]) unpaidUids.push(doc.id);
         });
 
         if (unpaidUids.length === 0) {
@@ -69,18 +69,18 @@ export const j5RemindCron = onSchedule(
 
         const adminUids: string[] = [];
         const bureauUids: string[] = [];
-        const adminEmails: string[] = [];  // combined admin + bureau emails
+        const adminEmails: string[] = []; // combined admin + bureau emails
         const memberEmails: Record<string, string> = {};
 
         usersSnap.forEach((doc) => {
           const data = doc.data();
-          const email = data['email'] as string;
-          const role = data['role'] as string;
-          if (role === 'admin') {
+          const email = data["email"] as string;
+          const role = data["role"] as string;
+          if (role === "admin") {
             adminUids.push(doc.id);
             adminEmails.push(email);
           }
-          if (role === 'bureau') {
+          if (role === "bureau") {
             bureauUids.push(doc.id);
             adminEmails.push(email);
           }
@@ -93,8 +93,8 @@ export const j5RemindCron = onSchedule(
           db,
           deptId,
           unpaidUids,
-          deadline: cycle['deadline'],
-          cycleIndex: cycle['index'] as number,
+          deadline: cycle["deadline"],
+          cycleIndex: cycle["index"] as number,
           adminUids,
           bureauUids,
           memberEmails,

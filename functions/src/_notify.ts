@@ -1,14 +1,14 @@
 // functions/src/_notify.ts
-import * as admin from 'firebase-admin';
+import * as admin from "firebase-admin";
 
 export type NotificationType =
-  | 'rappel_j5'
-  | 'paiement_enregistre'
-  | 'cagnotte_complete'
-  | 'penalite_appliquee'
-  | 'beneficiaire_confirme'
-  | 'cycle_ouvert'
-  | 'cycle_cloture';
+  | "rappel_j5"
+  | "paiement_enregistre"
+  | "cagnotte_complete"
+  | "penalite_appliquee"
+  | "beneficiaire_confirme"
+  | "cycle_ouvert"
+  | "cycle_cloture";
 
 type DB = admin.firestore.Firestore;
 type Timestamp = admin.firestore.Timestamp;
@@ -43,23 +43,23 @@ export async function notifyPaymentRecorded(params: {
   db: DB;
   deptId: string;
   userId: string;
-  userEmail: string;  // reserved for email — TODO: activer emails quand plan Blaze disponible
+  userEmail: string; // reserved for email — TODO: activer emails quand plan Blaze disponible
   cycleIndex: number;
   montant: number;
 }): Promise<void> {
-  const { db, deptId, userId, cycleIndex, montant } = params;
-  const body = `Votre cotisation de ${montant.toLocaleString('fr-FR')} FCFA pour le cycle ${cycleIndex} a été enregistrée.`;
+  const {db, deptId, userId, cycleIndex, montant} = params;
+  const body = `Votre cotisation de ${montant.toLocaleString("fr-FR")} FCFA pour le cycle ${cycleIndex} a été enregistrée.`;
   try {
     const batch = db.batch();
     batch.set(
       db.collection(`departments/${deptId}/users/${userId}/notifications`).doc(),
-      notifData('paiement_enregistre', 'Cotisation enregistrée', body)
+      notifData("paiement_enregistre", "Cotisation enregistrée", body)
     );
     // TODO: activer emails quand plan Blaze disponible
     // batch.set(db.collection('mail').doc(), mailData([params.userEmail], `Cotisation enregistrée — Cycle ${cycleIndex}`, body, deptId));
     await batch.commit();
   } catch (err) {
-    console.error('notifyPaymentRecorded: batch failed', err);
+    console.error("notifyPaymentRecorded: batch failed", err);
   }
 }
 
@@ -73,13 +73,13 @@ export async function notifyJ5(params: {
   cycleIndex: number;
   adminUids: string[];
   bureauUids: string[];
-  memberEmails: Record<string, string>;  // reserved — TODO: activer emails quand plan Blaze disponible
-  adminEmails: string[];                 // reserved — TODO: activer emails quand plan Blaze disponible
+  memberEmails: Record<string, string>; // reserved — TODO: activer emails quand plan Blaze disponible
+  adminEmails: string[]; // reserved — TODO: activer emails quand plan Blaze disponible
 }): Promise<void> {
-  const { db, deptId, unpaidUids, deadline, cycleIndex, adminUids, bureauUids } = params;
+  const {db, deptId, unpaidUids, deadline, cycleIndex, adminUids, bureauUids} = params;
   const dateStr = deadline
     .toDate()
-    .toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+    .toLocaleDateString("fr-FR", {day: "numeric", month: "long", year: "numeric"});
   const memberBody = `Vous avez 5 jours pour cotiser. Deadline : ${dateStr}.`;
   const summaryBody = `Il reste ${unpaidUids.length} membre(s) à cotiser avant le ${dateStr} (cycle ${cycleIndex}).`;
   try {
@@ -87,13 +87,13 @@ export async function notifyJ5(params: {
     for (const uid of unpaidUids) {
       batch.set(
         db.collection(`departments/${deptId}/users/${uid}/notifications`).doc(),
-        notifData('rappel_j5', 'Rappel cotisation — J-5', memberBody)
+        notifData("rappel_j5", "Rappel cotisation — J-5", memberBody)
       );
     }
     for (const uid of [...adminUids, ...bureauUids]) {
       batch.set(
         db.collection(`departments/${deptId}/users/${uid}/notifications`).doc(),
-        notifData('rappel_j5', `J-5 : ${unpaidUids.length} membre(s) en attente`, summaryBody)
+        notifData("rappel_j5", `J-5 : ${unpaidUids.length} membre(s) en attente`, summaryBody)
       );
     }
     // TODO: activer emails quand plan Blaze disponible
@@ -101,7 +101,7 @@ export async function notifyJ5(params: {
     // if (params.adminEmails.length > 0) { batch.set(db.collection('mail').doc(), mailData(params.adminEmails, `Tontine — ${unpaidUids.length} membre(s) en attente (J-5)`, summaryBody, deptId)); }
     await batch.commit();
   } catch (err) {
-    console.error('notifyJ5: batch failed', err);
+    console.error("notifyJ5: batch failed", err);
   }
 }
 
@@ -111,27 +111,27 @@ export async function notifyKittyComplete(params: {
   db: DB;
   deptId: string;
   beneficiaryUid: string;
-  beneficiaryEmail: string;  // reserved — TODO: activer emails quand plan Blaze disponible
+  beneficiaryEmail: string; // reserved — TODO: activer emails quand plan Blaze disponible
   montantVerse: number;
   cycleIndex: number;
   adminUids: string[];
   bureauUids: string[];
-  adminEmails: string[];     // reserved — TODO: activer emails quand plan Blaze disponible
+  adminEmails: string[]; // reserved — TODO: activer emails quand plan Blaze disponible
 }): Promise<void> {
-  const { db, deptId, beneficiaryUid, montantVerse, cycleIndex, adminUids, bureauUids } = params;
-  const montantStr = montantVerse.toLocaleString('fr-FR');
+  const {db, deptId, beneficiaryUid, montantVerse, cycleIndex, adminUids, bureauUids} = params;
+  const montantStr = montantVerse.toLocaleString("fr-FR");
   const benefBody = `La cagnotte est complète — ${montantStr} FCFA vous seront remis. Confirmez la réception une fois l'argent en main.`;
   const adminBody = `Cycle ${cycleIndex} clôturé automatiquement. Tous les membres ont cotisé. Le bénéficiaire peut être payé (${montantStr} FCFA). En attente de sa confirmation.`;
   try {
     const batch = db.batch();
     batch.set(
       db.collection(`departments/${deptId}/users/${beneficiaryUid}/notifications`).doc(),
-      notifData('cagnotte_complete', 'Cagnotte complète !', benefBody)
+      notifData("cagnotte_complete", "Cagnotte complète !", benefBody)
     );
     for (const uid of [...adminUids, ...bureauUids]) {
       batch.set(
         db.collection(`departments/${deptId}/users/${uid}/notifications`).doc(),
-        notifData('cagnotte_complete', `Cycle ${cycleIndex} clôturé`, adminBody)
+        notifData("cagnotte_complete", `Cycle ${cycleIndex} clôturé`, adminBody)
       );
     }
     // TODO: activer emails quand plan Blaze disponible
@@ -139,7 +139,7 @@ export async function notifyKittyComplete(params: {
     // if (params.adminEmails.length > 0) { batch.set(db.collection('mail').doc(), mailData(params.adminEmails, `Cycle ${cycleIndex} clôturé automatiquement`, adminBody, deptId)); }
     await batch.commit();
   } catch (err) {
-    console.error('notifyKittyComplete: batch failed', err);
+    console.error("notifyKittyComplete: batch failed", err);
   }
 }
 
@@ -153,14 +153,14 @@ export async function notifyLatePayment(params: {
   cycleIndex: number;
   adminUids: string[];
   bureauUids: string[];
-  penalizedEmails: Record<string, string>;  // reserved — TODO: activer emails quand plan Blaze disponible
-  adminEmails: string[];                    // reserved — TODO: activer emails quand plan Blaze disponible
+  penalizedEmails: Record<string, string>; // reserved — TODO: activer emails quand plan Blaze disponible
+  adminEmails: string[]; // reserved — TODO: activer emails quand plan Blaze disponible
   newRanks: Record<string, number>;
 }): Promise<void> {
-  const { db, deptId, penalizedUids, cycleIndex, adminUids, bureauUids, newRanks } = params;
+  const {db, deptId, penalizedUids, cycleIndex, adminUids, bureauUids, newRanks} = params;
   const rankLines = penalizedUids
     .map((uid) => `• ${uid} → nouveau rang : ${newRanks[uid]}`)
-    .join('<br>');
+    .join("<br>");
   const adminBody = `Cycle ${cycleIndex} clôturé avec ${penalizedUids.length} pénalité(s).<br>${rankLines}`;
   try {
     const batch = db.batch();
@@ -169,7 +169,7 @@ export async function notifyLatePayment(params: {
       const body = `Vous n'avez pas cotisé à temps pour le cycle ${cycleIndex}. Pénalité appliquée — nouveau rang : ${rank}.`;
       batch.set(
         db.collection(`departments/${deptId}/users/${uid}/notifications`).doc(),
-        notifData('penalite_appliquee', 'Pénalité appliquée', body)
+        notifData("penalite_appliquee", "Pénalité appliquée", body)
       );
       // TODO: activer emails quand plan Blaze disponible
       // if (params.penalizedEmails[uid]) { batch.set(db.collection('mail').doc(), mailData([params.penalizedEmails[uid]], `Pénalité — Cycle ${cycleIndex}`, body, deptId)); }
@@ -178,7 +178,7 @@ export async function notifyLatePayment(params: {
       batch.set(
         db.collection(`departments/${deptId}/users/${uid}/notifications`).doc(),
         notifData(
-          'penalite_appliquee',
+          "penalite_appliquee",
           `${penalizedUids.length} pénalité(s) — Cycle ${cycleIndex}`,
           adminBody
         )
@@ -188,7 +188,7 @@ export async function notifyLatePayment(params: {
     // if (params.adminEmails.length > 0) { batch.set(db.collection('mail').doc(), mailData(params.adminEmails, `Pénalités cycle ${cycleIndex} — ${penalizedUids.length} membre(s)`, adminBody, deptId)); }
     await batch.commit();
   } catch (err) {
-    console.error('notifyLatePayment: batch failed', err);
+    console.error("notifyLatePayment: batch failed", err);
   }
 }
 
@@ -205,10 +205,10 @@ export async function notifyConfirmation(params: {
   cycleIndex: number;
   adminUids: string[];
   bureauUids: string[];
-  adminEmails: string[];  // reserved — TODO: activer emails quand plan Blaze disponible
+  adminEmails: string[]; // reserved — TODO: activer emails quand plan Blaze disponible
 }): Promise<void> {
-  const { db, deptId, beneficiaryUid, beneficiaryName, montantVerse, cycleIndex, adminUids, bureauUids } = params;
-  const montantStr = montantVerse.toLocaleString('fr-FR');
+  const {db, deptId, beneficiaryUid, beneficiaryName, montantVerse, cycleIndex, adminUids, bureauUids} = params;
+  const montantStr = montantVerse.toLocaleString("fr-FR");
   const benefBody = `Votre confirmation de réception de ${montantStr} FCFA (cycle ${cycleIndex}) a bien été enregistrée. L'admin peut maintenant ouvrir le cycle suivant.`;
   const adminBody = `${beneficiaryName} a confirmé la réception de ${montantStr} FCFA (cycle ${cycleIndex}). Vous pouvez ouvrir le cycle suivant.`;
   try {
@@ -216,18 +216,18 @@ export async function notifyConfirmation(params: {
     // In-app only for beneficiary — no email (they just performed the action; an email is redundant)
     batch.set(
       db.collection(`departments/${deptId}/users/${beneficiaryUid}/notifications`).doc(),
-      notifData('beneficiaire_confirme', 'Réception confirmée', benefBody)
+      notifData("beneficiaire_confirme", "Réception confirmée", benefBody)
     );
     for (const uid of [...adminUids, ...bureauUids]) {
       batch.set(
         db.collection(`departments/${deptId}/users/${uid}/notifications`).doc(),
-        notifData('beneficiaire_confirme', `${beneficiaryName} a confirmé la réception`, adminBody)
+        notifData("beneficiaire_confirme", `${beneficiaryName} a confirmé la réception`, adminBody)
       );
     }
     // TODO: activer emails quand plan Blaze disponible
     // if (params.adminEmails.length > 0) { batch.set(db.collection('mail').doc(), mailData(params.adminEmails, `Réception confirmée — Cycle ${cycleIndex}`, adminBody, deptId)); }
     await batch.commit();
   } catch (err) {
-    console.error('notifyConfirmation: batch failed', err);
+    console.error("notifyConfirmation: batch failed", err);
   }
 }
