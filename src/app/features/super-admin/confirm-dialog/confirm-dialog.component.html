@@ -1,0 +1,28 @@
+<h2 mat-dialog-title>{{ data.title }}</h2>
+
+<mat-dialog-content>
+  <p class="sa-confirm__message">{{ data.message }}</p>
+  @if (data.requiresComment) {
+    <mat-form-field appearance="outline" class="sa-confirm__field">
+      <mat-label>{{ data.commentLabel ?? 'Commentaire' }}</mat-label>
+      <textarea
+        matInput
+        rows="3"
+        [ngModel]="comment()"
+        (ngModelChange)="comment.set($event)">
+      </textarea>
+    </mat-form-field>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-button (click)="cancel()">Annuler</button>
+  <button
+    class="sa-confirm__confirm-btn"
+    mat-raised-button
+    [color]="data.dangerMode ? 'warn' : 'primary'"
+    [disabled]="confirmDisabled"
+    (click)="confirm()">
+    {{ data.confirmLabel ?? 'Confirmer' }}
+  </button>
+</mat-dialog-actions>

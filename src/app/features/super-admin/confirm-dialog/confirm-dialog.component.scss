@@ -1,0 +1,11 @@
+.sa-confirm {
+  &__message {
+    font-size: var(--font-size-sm);
+    color: var(--color-text-secondary);
+    margin: 0 0 var(--space-3);
+  }
+
+  &__field {
+    width: 100%;
+  }
+}
