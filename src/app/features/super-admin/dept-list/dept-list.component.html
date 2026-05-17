@@ -1,0 +1,60 @@
+@if (departments() === undefined) {
+  <div class="sa-dept-list-loading">
+    <div class="skeleton sa-dept-list__skeleton-stats"></div>
+    <div class="skeleton sa-dept-list__skeleton-row"></div>
+    <div class="skeleton sa-dept-list__skeleton-row"></div>
+    <div class="skeleton sa-dept-list__skeleton-row"></div>
+  </div>
+} @else {
+  <div class="sa-dept-list">
+    <div class="sa-dept-list__stats">
+      <mat-chip-set>
+        <mat-chip>{{ totalCount() }} département(s)</mat-chip>
+        <mat-chip class="sa-dept-list__chip--active">{{ activeCount() }} actif(s)</mat-chip>
+        @if (pendingCount() > 0) {
+          <mat-chip class="sa-dept-list__chip--pending">{{ pendingCount() }} en attente</mat-chip>
+        }
+      </mat-chip-set>
+    </div>
+
+    @if (!departments()!.length) {
+      <p class="sa-dept-list__empty">Aucun département enregistré.</p>
+    } @else {
+      <div class="sa-dept-list__table-wrapper">
+        <table mat-table [dataSource]="departments()!" class="sa-dept-list__table">
+
+          <ng-container matColumnDef="name">
+            <th mat-header-cell *matHeaderCellDef>Nom</th>
+            <td mat-cell *matCellDef="let dept">{{ dept.name }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="status">
+            <th mat-header-cell *matHeaderCellDef>Statut</th>
+            <td mat-cell *matCellDef="let dept">
+              <span [class]="'sa-dept-list__badge sa-dept-list__badge--' + dept.status">
+                {{ dept.status === 'active' ? 'Actif' : 'En attente' }}
+              </span>
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="createdAt">
+            <th mat-header-cell *matHeaderCellDef>Créé le</th>
+            <td mat-cell *matCellDef="let dept">
+              {{ dept.createdAt?.toDate() | date:'d MMM yyyy' }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let dept">
+              <a mat-button [routerLink]="['/admin/departments', dept.id]">Voir détail</a>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+    }
+  </div>
+}
