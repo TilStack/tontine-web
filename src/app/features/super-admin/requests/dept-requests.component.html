@@ -1,0 +1,69 @@
+@if (requests() === undefined) {
+  <div class="sa-requests-loading">
+    <div class="skeleton sa-requests__skeleton-row"></div>
+    <div class="skeleton sa-requests__skeleton-row"></div>
+    <div class="skeleton sa-requests__skeleton-row"></div>
+  </div>
+} @else {
+  <div class="sa-requests">
+    <h2 class="sa-requests__title">Demandes en attente</h2>
+
+    @if (error()) {
+      <p class="alert-error">{{ error() }}</p>
+    }
+
+    @if (!requests()!.length) {
+      <p class="sa-requests__empty">Aucune demande en attente.</p>
+    } @else {
+      <div class="sa-requests__table-wrapper">
+        <table mat-table [dataSource]="requests()!" class="sa-requests__table">
+
+          <ng-container matColumnDef="deptName">
+            <th mat-header-cell *matHeaderCellDef>Département</th>
+            <td mat-cell *matCellDef="let r">{{ r.deptName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="requesterName">
+            <th mat-header-cell *matHeaderCellDef>Nom</th>
+            <td mat-cell *matCellDef="let r">{{ r.requesterName }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="requesterEmail">
+            <th mat-header-cell *matHeaderCellDef>Email</th>
+            <td mat-cell *matCellDef="let r">{{ r.requesterEmail }}</td>
+          </ng-container>
+
+          <ng-container matColumnDef="message">
+            <th mat-header-cell *matHeaderCellDef>Message</th>
+            <td mat-cell *matCellDef="let r" class="sa-requests__message-cell">
+              {{ r.message }}
+            </td>
+          </ng-container>
+
+          <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let r" class="sa-requests__actions-cell">
+              <button
+                mat-flat-button
+                color="primary"
+                [disabled]="loadingId() === r.id"
+                (click)="approve(r.id)">
+                Approuver
+              </button>
+              <button
+                mat-stroked-button
+                color="warn"
+                [disabled]="loadingId() === r.id"
+                (click)="openRejectDialog(r.id)">
+                Rejeter
+              </button>
+            </td>
+          </ng-container>
+
+          <tr mat-header-row *matHeaderRowDef="displayedColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedColumns"></tr>
+        </table>
+      </div>
+    }
+  </div>
+}
