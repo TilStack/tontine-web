@@ -25,6 +25,9 @@
   ],
   "hosting": {
     "public": "dist/tontine-web/browser",
+    "predeploy": [
+      "cp dist/tontine-web/browser/index.csr.html dist/tontine-web/browser/index.html"
+    ],
     "ignore": [
       "firebase.json",
       "**/.*",
