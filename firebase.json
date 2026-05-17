@@ -24,7 +24,7 @@
     }
   ],
   "hosting": {
-    "public": "dist/tontine-web/broswer",
+    "public": "dist/tontine-web/browser",
     "ignore": [
       "firebase.json",
       "**/.*",
