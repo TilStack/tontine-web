@@ -33,11 +33,10 @@
   padding: var(--space-4);
   border-bottom: 1px solid rgba(255, 255, 255, 0.08);
 
-  &-icon {
-    color: var(--sidebar-accent);
-    font-size: 28px;
-    width: 28px;
-    height: 28px;
+  &-logo {
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
     flex-shrink: 0;
   }
 

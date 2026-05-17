@@ -15,17 +15,15 @@
   text-align: center;
 }
 
-.auth-brand__icon {
-  font-size: 40px;
-  width: 40px;
-  height: 40px;
-  color: var(--color-accent);
+.auth-brand__logo {
+  width: 64px;
+  height: 64px;
+  object-fit: contain;
   margin-bottom: var(--space-2);
 
   @include m.desktop {
-    font-size: 48px;
-    width: 48px;
-    height: 48px;
+    width: 80px;
+    height: 80px;
   }
 }
 
