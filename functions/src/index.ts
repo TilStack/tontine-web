@@ -21,3 +21,8 @@ export { j5RemindCron } from './j5-reminder-cron.js';
 
 // Caisse module
 export { addTransaction } from './add-transaction.js';
+
+// Super Admin interventions
+export { rejectDepartmentRequest } from './reject-department-request.js';
+export { forceSaisonClose } from './force-saison-close.js';
+export { excludeMember } from './exclude-member.js';
