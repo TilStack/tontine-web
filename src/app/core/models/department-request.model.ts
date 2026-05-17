@@ -10,4 +10,6 @@ export interface DepartmentRequest {
   message: string;
   status: DepartmentRequestStatus;
   createdAt: Timestamp;
+  rejectedAt?: Timestamp;
+  rejectionReason?: string;
 }
