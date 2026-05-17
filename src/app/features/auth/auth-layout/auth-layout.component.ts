@@ -1,10 +1,9 @@
 import { Component } from '@angular/core';
-import { MatIcon } from '@angular/material/icon';
 
 @Component({
   selector: 'app-auth-layout',
   standalone: true,
-  imports: [MatIcon],
+  imports: [],
   templateUrl: './auth-layout.component.html',
   styleUrl: './auth-layout.component.scss',
 })
