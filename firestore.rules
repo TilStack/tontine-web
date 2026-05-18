@@ -87,11 +87,13 @@ service cloud.firestore {
       }
     }
 
-    // Demandes de création de département — écriture publique (pas de deptId requis)
+    // Demandes de création de département
+    // - create : publique (formulaire soumis sans compte)
+    // - read/update/delete : super_admin uniquement
+    //   → adminPassword n'est jamais lisible côté client Angular
     match /department_requests/{requestId} {
       allow create: if true;
-      allow read, update: if isSuperAdmin();
-      allow delete: if isSuperAdmin();
+      allow read, update, delete: if isSuperAdmin();
     }
 
     // Profil global utilisateur — lecture/écriture propre uniquement

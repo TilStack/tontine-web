@@ -68,7 +68,10 @@
       <mat-card-content>
         <div class="admin-members__header">
           <h3>Membres ({{ ctx()!.members.length }})</h3>
-          <button mat-stroked-button (click)="openInviteDialog()">Inviter un membre</button>
+          <div class="admin-members__header-actions">
+            <button mat-stroked-button (click)="openInviteDialog()">Inviter un membre</button>
+            <button mat-flat-button (click)="openAddMemberDialog()">Ajouter un membre</button>
+          </div>
         </div>
         @if (roleError()) {
           <p class="alert-error">{{ roleError() }}</p>

@@ -1,0 +1,73 @@
+<h2 mat-dialog-title>Ajouter un membre</h2>
+
+<mat-dialog-content class="add-member-dialog__content">
+  <form [formGroup]="form">
+    <mat-form-field appearance="outline">
+      <mat-label>Nom complet</mat-label>
+      <input matInput formControlName="displayName" autocomplete="off" />
+      @if (form.get('displayName')?.hasError('required') && form.get('displayName')?.touched) {
+        <mat-error>Le nom est requis</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Email</mat-label>
+      <input matInput formControlName="email" type="email" autocomplete="off" />
+      @if (form.get('email')?.hasError('required') && form.get('email')?.touched) {
+        <mat-error>L'email est requis</mat-error>
+      }
+      @if (form.get('email')?.hasError('email') && form.get('email')?.touched) {
+        <mat-error>Format d'email invalide</mat-error>
+      }
+    </mat-form-field>
+
+    <mat-form-field appearance="outline">
+      <mat-label>Rôle</mat-label>
+      <mat-select formControlName="role">
+        <mat-option value="membre">Membre</mat-option>
+        <mat-option value="bureau">Bureau</mat-option>
+      </mat-select>
+      @if (form.get('role')?.hasError('required') && form.get('role')?.touched) {
+        <mat-error>Choisissez un rôle</mat-error>
+      }
+    </mat-form-field>
+  </form>
+
+  <div class="add-member-dialog__pwd-section">
+    <p class="add-member-dialog__pwd-label">Mot de passe temporaire</p>
+    <div class="add-member-dialog__pwd-row">
+      <code class="add-member-dialog__pwd-value">
+        {{ showPassword() ? password() : '••••••••' }}
+      </code>
+      <div class="add-member-dialog__pwd-actions">
+        <button mat-icon-button type="button"
+          (click)="showPassword.set(!showPassword())"
+          [attr.aria-label]="showPassword() ? 'Masquer' : 'Afficher'">
+          <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        <button mat-icon-button type="button"
+          (click)="copyPassword()"
+          [attr.aria-label]="copied() ? 'Copié !' : 'Copier le mot de passe'">
+          <mat-icon>{{ copied() ? 'check' : 'content_copy' }}</mat-icon>
+        </button>
+      </div>
+    </div>
+    <button mat-stroked-button type="button" class="add-member-dialog__regen-btn"
+      (click)="regenerate()">
+      Générer un nouveau mot de passe
+    </button>
+  </div>
+
+  @if (error()) {
+    <p class="alert-error add-member-dialog__error">{{ error() }}</p>
+  }
+</mat-dialog-content>
+
+<mat-dialog-actions align="end">
+  <button mat-stroked-button mat-dialog-close type="button">Annuler</button>
+  <button mat-flat-button color="primary" type="button"
+    [disabled]="form.invalid || loading()"
+    (click)="submit()">
+    {{ loading() ? 'Création…' : 'Créer le membre' }}
+  </button>
+</mat-dialog-actions>

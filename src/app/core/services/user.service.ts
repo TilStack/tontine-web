@@ -49,10 +49,10 @@ export class UserService {
     await updateDoc(ref, { mustResetPassword: value });
   }
 
-  private async post(path: string, body: unknown): Promise<void> {
+  private async post<T = void>(path: string, body: unknown): Promise<T> {
     const token = await this.auth.currentUser?.getIdToken();
     return firstValueFrom(
-      this.http.post<void>(`${environment.apiUrl}${path}`, body, {
+      this.http.post<T>(`${environment.apiUrl}${path}`, body, {
         headers: { Authorization: `Bearer ${token ?? ''}` },
       })
     );
@@ -64,5 +64,14 @@ export class UserService {
 
   updateUserRole(payload: { deptId: string; userId: string; newRole: UserRole }): Promise<void> {
     return this.post('/member/update-role', payload);
+  }
+
+  createMember(payload: {
+    email: string;
+    displayName: string;
+    role: 'bureau' | 'membre';
+    password: string;
+  }): Promise<{ uid: string; displayName: string; email: string }> {
+    return this.post<{ uid: string; displayName: string; email: string }>('/member/create', payload);
   }
 }

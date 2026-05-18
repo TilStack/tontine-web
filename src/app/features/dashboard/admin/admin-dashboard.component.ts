@@ -23,6 +23,7 @@ import { BeneficiaireCardComponent } from '../shared/beneficiaire-card/beneficia
 import { MonRangCardComponent } from '../shared/mon-rang-card/mon-rang-card.component';
 import { HistoryCardComponent } from '../shared/history-card/history-card.component';
 import { InviteDialogComponent } from '../../membres/invite-dialog/invite-dialog.component';
+import { AddMemberDialogComponent, AddMemberDialogData } from '../add-member-dialog/add-member-dialog.component';
 import { ConfirmDialogComponent, ConfirmDialogData } from '../../../shared/components/confirm-dialog/confirm-dialog.component';
 import { UserProfile, UserRole } from '../../../core/models/user.model';
 
@@ -185,6 +186,15 @@ export class AdminDashboardComponent {
     this.dialog.open(InviteDialogComponent, {
       data: { deptId },
       width: '420px',
+    });
+  }
+
+  openAddMemberDialog(): void {
+    const deptId = this.ctx()?.deptId;
+    if (!deptId) return;
+    this.dialog.open(AddMemberDialogComponent, {
+      data: { deptId } satisfies AddMemberDialogData,
+      width: '440px',
     });
   }
 }

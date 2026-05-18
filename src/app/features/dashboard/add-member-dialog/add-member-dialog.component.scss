@@ -1,0 +1,61 @@
+.add-member-dialog__content {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 340px;
+  padding-top: var(--space-2);
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+  }
+
+  mat-form-field {
+    width: 100%;
+  }
+}
+
+.add-member-dialog__pwd-section {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-2);
+  padding: var(--space-3);
+  background: var(--color-surface);
+  border-radius: var(--radius-md);
+  border: 1px solid var(--color-border);
+}
+
+.add-member-dialog__pwd-label {
+  font-size: 0.75rem;
+  color: var(--color-on-surface-variant);
+  margin: 0;
+}
+
+.add-member-dialog__pwd-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2);
+}
+
+.add-member-dialog__pwd-value {
+  font-family: monospace;
+  font-size: 1rem;
+  letter-spacing: 0.05em;
+  color: var(--color-on-surface);
+}
+
+.add-member-dialog__pwd-actions {
+  display: flex;
+  gap: var(--space-1);
+  flex-shrink: 0;
+}
+
+.add-member-dialog__regen-btn {
+  align-self: flex-start;
+}
+
+.add-member-dialog__error {
+  margin-top: var(--space-2);
+}
