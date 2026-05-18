@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import {
   MatSidenav,
   MatSidenavContainer,
@@ -26,6 +26,7 @@ import { SuperAdminService } from '../super-admin.service';
 export class SuperAdminDashboardComponent {
   private auth = inject(AuthService);
   private saService = inject(SuperAdminService);
+  private router = inject(Router);
 
   private departments = toSignal(this.saService.watchDepartments(), { initialValue: [] });
   private requests = toSignal(this.saService.watchPendingRequests(), { initialValue: [] });
@@ -33,7 +34,9 @@ export class SuperAdminDashboardComponent {
   deptCount = computed(() => this.departments().length);
   pendingCount = computed(() => this.requests().length);
 
-  logout(): void {
-    this.auth.logout();
+  async logout(): Promise<void> {
+    console.log('logout called');
+    await this.auth.logout();
+    this.router.navigate(['/auth/login']);
   }
 }

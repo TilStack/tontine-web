@@ -40,6 +40,17 @@
   }
 }
 
+@media (max-width: 768px) {
+  .sa-dashboard {
+    flex-direction: column;
+  }
+
+  .sa-dashboard__nav {
+    width: 100%;
+    min-height: auto;
+  }
+}
+
 .sa-nav {
   &__badge {
     margin-left: auto;

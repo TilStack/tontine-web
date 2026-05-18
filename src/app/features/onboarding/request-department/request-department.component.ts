@@ -14,6 +14,7 @@ import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
 import { MatIconButton } from '@angular/material/button';
 import { firstValueFrom } from 'rxjs';
+import { HttpErrorResponse } from '@angular/common/http';
 import { AuthLayoutComponent } from '../../auth/auth-layout/auth-layout.component';
 import { ApiService } from '../../../core/services/api.service';
 
@@ -80,8 +81,10 @@ export class RequestDepartmentComponent {
         }),
       );
       this.submitted.set(true);
-    } catch {
-      this.error.set("Erreur lors de l'envoi. Réessayez.");
+    } catch (err) {
+      const status = err instanceof HttpErrorResponse ? ` (${err.status})` : '';
+      this.error.set(`Erreur lors de l'envoi. Réessayez.${status}`);
+      console.error('department/request error:', err);
     } finally {
       this.loading.set(false);
     }
