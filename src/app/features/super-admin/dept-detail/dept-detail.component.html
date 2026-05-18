@@ -25,7 +25,7 @@
             {{ d.dept.status === 'active' ? 'Actif' : 'En attente' }}
           </span>
         </p>
-        <p>Créé le : {{ d.dept.createdAt?.toDate() | date:'d MMMM yyyy' }}</p>
+        <p>Créé le : {{ d.dept.createdAt.toDate() | date:'d MMMM yyyy' }}</p>
         <p>Admin ID : {{ d.dept.adminId }}</p>
       </mat-card-content>
     </mat-card>

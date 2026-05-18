@@ -13,7 +13,7 @@
               [class.caisse-card__tx-amount--debit]="t.type === 'debit'">
               {{ t.type === 'credit' ? '+' : '-' }}{{ t.montant | fcfa }}
             </span>
-            <span class="caisse-card__tx-date">{{ t.createdAt?.toDate() | date:'dd/MM' }}</span>
+            <span class="caisse-card__tx-date">{{ t.createdAt.toDate() | date:'dd/MM' }}</span>
           </li>
         }
       </ul>
