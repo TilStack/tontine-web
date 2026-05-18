@@ -9,14 +9,17 @@ import {
   collectionData,
   serverTimestamp,
 } from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
-import { Observable } from 'rxjs';
+import { Auth } from '@angular/fire/auth';
+import { HttpClient } from '@angular/common/http';
+import { Observable, firstValueFrom } from 'rxjs';
 import { UserProfile, UserRole } from '../models/user.model';
+import { environment } from '../../../environments/environment';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private firestore = inject(Firestore);
-  private functions = inject(Functions);
+  private http = inject(HttpClient);
+  private auth = inject(Auth);
 
   watchProfile(deptId: string, uid: string): Observable<UserProfile | undefined> {
     const ref = doc(this.firestore, `departments/${deptId}/users/${uid}`);
@@ -46,13 +49,20 @@ export class UserService {
     await updateDoc(ref, { mustResetPassword: value });
   }
 
+  private async post(path: string, body: unknown): Promise<void> {
+    const token = await this.auth.currentUser?.getIdToken();
+    return firstValueFrom(
+      this.http.post<void>(`${environment.apiUrl}${path}`, body, {
+        headers: { Authorization: `Bearer ${token ?? ''}` },
+      })
+    );
+  }
+
   sendInvitation(payload: { deptId: string; email: string; role: UserRole }): Promise<void> {
-    const fn = httpsCallable(this.functions, 'sendInvitation');
-    return fn(payload).then(() => undefined);
+    return this.post('/invitation/send', payload);
   }
 
   updateUserRole(payload: { deptId: string; userId: string; newRole: UserRole }): Promise<void> {
-    const fn = httpsCallable(this.functions, 'updateUserRole');
-    return fn(payload).then(() => undefined);
+    return this.post('/member/update-role', payload);
   }
 }

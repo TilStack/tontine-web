@@ -14,8 +14,10 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from '@angular/fire/auth';
-import { Functions, httpsCallable } from '@angular/fire/functions';
+import { HttpClient } from '@angular/common/http';
+import { firstValueFrom } from 'rxjs';
 import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
+import { environment } from '../../../../environments/environment';
 
 @Component({
   selector: 'app-accept-invitation',
@@ -37,7 +39,7 @@ export class AcceptInvitationComponent implements OnInit {
   private route = inject(ActivatedRoute);
   private router = inject(Router);
   private auth = inject(Auth);
-  private functions = inject(Functions);
+  private http = inject(HttpClient);
   private fb = inject(FormBuilder);
 
   token = signal<string | null>(null);
@@ -66,13 +68,13 @@ export class AcceptInvitationComponent implements OnInit {
     this.token.set(token);
 
     try {
-      const validateFn = httpsCallable<
-        { deptId: string; token: string },
-        { email: string; deptName: string }
-      >(this.functions, 'validateInvitation');
-
-      const result = await validateFn({ deptId: dept, token });
-      this.invitationEmail.set(result.data.email);
+      const result = await firstValueFrom(
+        this.http.post<{ email: string; deptName: string }>(
+          `${environment.apiUrl}/invitation/validate`,
+          { deptId: dept, token }
+        )
+      );
+      this.invitationEmail.set(result.email);
       this.tokenValid.set(true);
     } catch {
       this.tokenValid.set(false);
@@ -100,11 +102,14 @@ export class AcceptInvitationComponent implements OnInit {
         displayName: this.form.value.displayName as string,
       });
 
-      const acceptFn = httpsCallable<{ deptId: string; token: string }, void>(
-        this.functions,
-        'acceptInvitation',
+      const idToken = await user.getIdToken();
+      await firstValueFrom(
+        this.http.post<void>(
+          `${environment.apiUrl}/invitation/accept`,
+          { deptId: this.deptId()!, token: this.token()! },
+          { headers: { Authorization: `Bearer ${idToken}` } }
+        )
       );
-      await acceptFn({ deptId: this.deptId()!, token: this.token()! });
 
       await user.getIdToken(true);
       await this.router.navigate(['/app']);

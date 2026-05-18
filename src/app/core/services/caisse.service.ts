@@ -9,14 +9,14 @@ import {
   orderBy,
   limit,
 } from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { CaisseDoc, TransactionDoc, AddTransactionPayload } from '../models/caisse.model';
+import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
 export class CaisseService {
   private firestore = inject(Firestore);
-  private functions = inject(Functions);
+  private api = inject(ApiService);
 
   watchCaisse(deptId: string): Observable<CaisseDoc | undefined> {
     const ref = doc(this.firestore, `departments/${deptId}/caisse`);
@@ -30,7 +30,6 @@ export class CaisseService {
   }
 
   addTransaction(payload: AddTransactionPayload): Promise<void> {
-    const fn = httpsCallable(this.functions, 'addTransaction');
-    return fn(payload).then(() => undefined);
+    return firstValueFrom(this.api.post('/caisse/transaction', payload));
   }
 }

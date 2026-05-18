@@ -8,15 +8,15 @@ import {
   limit,
   orderBy,
 } from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
-import { Observable, of } from 'rxjs';
+import { Observable, of, firstValueFrom } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Cycle, Cotisation, ActiveCycleData } from '../models/cycle.model';
+import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
 export class CycleService {
   private firestore = inject(Firestore);
-  private functions = inject(Functions);
+  private api = inject(ApiService);
 
   watchCurrentCycle(
     deptId: string,
@@ -58,22 +58,18 @@ export class CycleService {
     cycleId: string;
     userId: string;
   }): Promise<void> {
-    const fn = httpsCallable(this.functions, 'markCotisationPaid');
-    return fn(payload).then(() => undefined);
+    return firstValueFrom(this.api.post('/cycle/mark-cotisation-paid', payload));
   }
 
   forceCloseCycle(payload: { saisonId: string; cycleId: string }): Promise<void> {
-    const fn = httpsCallable(this.functions, 'forceCloseCycle');
-    return fn(payload).then(() => undefined);
+    return firstValueFrom(this.api.post('/cycle/force-close', payload));
   }
 
   openNextCycle(payload: { saisonId: string; cycleId: string }): Promise<void> {
-    const fn = httpsCallable(this.functions, 'openNextCycle');
-    return fn(payload).then(() => undefined);
+    return firstValueFrom(this.api.post('/saison/open-next-cycle', payload));
   }
 
   confirmReception(payload: { saisonId: string; cycleId: string }): Promise<void> {
-    const fn = httpsCallable(this.functions, 'confirmReception');
-    return fn(payload).then(() => undefined);
+    return firstValueFrom(this.api.post('/cycle/confirm-reception', payload));
   }
 }

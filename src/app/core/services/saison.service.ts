@@ -7,10 +7,10 @@ import {
   where,
   limit,
 } from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { map } from 'rxjs/operators';
 import { Saison, SaisonMode } from '../models/saison.model';
+import { ApiService } from './api.service';
 
 export interface CreateSaisonPayload {
   mode: SaisonMode;
@@ -21,7 +21,7 @@ export interface CreateSaisonPayload {
 @Injectable({ providedIn: 'root' })
 export class SaisonService {
   private firestore = inject(Firestore);
-  private functions = inject(Functions);
+  private api = inject(ApiService);
 
   watchActiveSaison(deptId: string): Observable<Saison | undefined> {
     const q = query(
@@ -35,10 +35,8 @@ export class SaisonService {
   }
 
   createSaison(payload: CreateSaisonPayload): Promise<{ saisonId: string; cycleId: string }> {
-    const fn = httpsCallable<CreateSaisonPayload, { saisonId: string; cycleId: string }>(
-      this.functions,
-      'createSaison'
+    return firstValueFrom(
+      this.api.post<{ saisonId: string; cycleId: string }>('/saison/create', payload)
     );
-    return fn(payload).then((r) => r.data);
   }
 }

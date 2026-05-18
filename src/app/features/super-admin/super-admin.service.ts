@@ -11,13 +11,13 @@ import {
   where,
   limit,
 } from '@angular/fire/firestore';
-import { Functions, httpsCallable } from '@angular/fire/functions';
-import { Observable, combineLatest, of } from 'rxjs';
+import { Observable, combineLatest, of, firstValueFrom } from 'rxjs';
 import { map, switchMap } from 'rxjs/operators';
 import { Department } from '../../core/models/department.model';
 import { DepartmentRequest } from '../../core/models/department-request.model';
 import { Saison } from '../../core/models/saison.model';
 import { UserProfile } from '../../core/models/user.model';
+import { ApiService } from '../../core/services/api.service';
 
 export interface DeptDetail {
   dept: Department;
@@ -29,7 +29,7 @@ export interface DeptDetail {
 @Injectable({ providedIn: 'root' })
 export class SuperAdminService {
   private firestore = inject(Firestore);
-  private functions = inject(Functions);
+  private api = inject(ApiService);
 
   watchDepartments(): Observable<Department[]> {
     return collectionData<Department>(
@@ -97,26 +97,18 @@ export class SuperAdminService {
   }
 
   approveRequest(requestId: string): Promise<void> {
-    return httpsCallable(this.functions, 'provisionDepartment')({ requestId }).then(
-      () => undefined
-    );
+    return firstValueFrom(this.api.post('/department/provision', { requestId }));
   }
 
   rejectRequest(requestId: string, reason: string): Promise<void> {
-    return httpsCallable(this.functions, 'rejectDepartmentRequest')({ requestId, reason }).then(
-      () => undefined
-    );
+    return firstValueFrom(this.api.post('/department/reject', { requestId, reason }));
   }
 
   forceCloseSaison(deptId: string, saisonId: string, reason: string): Promise<void> {
-    return httpsCallable(this.functions, 'forceSaisonClose')({ deptId, saisonId, reason }).then(
-      () => undefined
-    );
+    return firstValueFrom(this.api.post('/admin/force-saison-close', { deptId, saisonId, reason }));
   }
 
   excludeMember(deptId: string, userId: string, reason: string): Promise<void> {
-    return httpsCallable(this.functions, 'excludeMember')({ deptId, userId, reason }).then(
-      () => undefined
-    );
+    return firstValueFrom(this.api.post('/member/exclude', { deptId, userId, reason }));
   }
 }
