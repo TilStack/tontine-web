@@ -39,6 +39,9 @@ export class LoginComponent {
 
   loading = signal(false);
   error = signal<string | null>(null);
+  resetLoading = signal(false);
+  resetSent = signal(false);
+  resetError = signal<string | null>(null);
 
   async submit(): Promise<void> {
     if (this.form.invalid) return;
@@ -55,6 +58,25 @@ export class LoginComponent {
       this.error.set('Email ou mot de passe incorrect.');
     } finally {
       this.loading.set(false);
+    }
+  }
+
+  async forgotPassword(): Promise<void> {
+    const email = (this.form.value.email as string)?.trim();
+    if (!email) {
+      this.resetError.set('Entrez votre email ci-dessus avant de continuer.');
+      return;
+    }
+    this.resetLoading.set(true);
+    this.resetError.set(null);
+    this.resetSent.set(false);
+    try {
+      await this.auth.sendPasswordReset(email);
+      this.resetSent.set(true);
+    } catch {
+      this.resetError.set("Impossible d'envoyer l'email. Vérifiez l'adresse.");
+    } finally {
+      this.resetLoading.set(false);
     }
   }
 }

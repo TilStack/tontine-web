@@ -12,6 +12,22 @@
       <input matInput type="password" formControlName="password" autocomplete="current-password" />
     </mat-form-field>
 
+    <button type="button" class="link-primary login__forgot"
+      [disabled]="resetLoading()"
+      (click)="forgotPassword()">
+      Mot de passe oublié ?
+    </button>
+
+    @if (resetSent()) {
+      <div class="alert-success" role="status">
+        Un email de réinitialisation a été envoyé à {{ form.value.email }}.
+      </div>
+    }
+
+    @if (resetError()) {
+      <div class="alert-error" role="alert">{{ resetError() }}</div>
+    }
+
     @if (error()) {
       <div class="alert-error" role="alert">{{ error() }}</div>
     }
