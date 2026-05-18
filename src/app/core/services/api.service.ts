@@ -19,4 +19,8 @@ export class ApiService {
       )
     );
   }
+
+  postPublic<T = void>(endpoint: string, body: unknown): Observable<T> {
+    return this.http.post<T>(`${environment.apiUrl}${endpoint}`, body);
+  }
 }

@@ -34,12 +34,41 @@
         <textarea matInput formControlName="message" rows="3"></textarea>
       </mat-form-field>
 
+      <mat-form-field appearance="outline">
+        <mat-label>Mot de passe</mat-label>
+        <input matInput [type]="showPassword() ? 'text' : 'password'"
+          formControlName="password" autocomplete="new-password" />
+        <button matSuffix mat-icon-button type="button"
+          (click)="showPassword.set(!showPassword())"
+          [attr.aria-label]="showPassword() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
+          <mat-icon>{{ showPassword() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.get('password')?.hasError('minlength') && form.get('password')?.touched) {
+          <mat-error>6 caractères minimum</mat-error>
+        }
+      </mat-form-field>
+
+      <mat-form-field appearance="outline">
+        <mat-label>Confirmer le mot de passe</mat-label>
+        <input matInput [type]="showConfirm() ? 'text' : 'password'"
+          formControlName="confirmPassword" autocomplete="new-password" />
+        <button matSuffix mat-icon-button type="button"
+          (click)="showConfirm.set(!showConfirm())"
+          [attr.aria-label]="showConfirm() ? 'Masquer le mot de passe' : 'Afficher le mot de passe'">
+          <mat-icon>{{ showConfirm() ? 'visibility_off' : 'visibility' }}</mat-icon>
+        </button>
+        @if (form.hasError('mismatch') && form.get('confirmPassword')?.touched) {
+          <mat-error>Les mots de passe ne correspondent pas</mat-error>
+        }
+      </mat-form-field>
+
       @if (error()) {
         <div class="alert-error" role="alert">{{ error() }}</div>
       }
 
       <div class="form-footer">
-        <button class="btn-primary" type="submit" [disabled]="loading()" [attr.aria-label]="loading() ? 'Envoi en cours' : 'Envoyer la demande'">
+        <button class="btn-primary" type="submit" [disabled]="loading()"
+          [attr.aria-label]="loading() ? 'Envoi en cours' : 'Envoyer la demande'">
           @if (loading()) {
             <mat-progress-spinner diameter="20" mode="indeterminate" />
           } @else {

@@ -5,17 +5,23 @@ import {
   FormGroup,
   Validators,
   ReactiveFormsModule,
+  AbstractControl,
+  ValidationErrors,
 } from '@angular/forms';
-import { MatFormField, MatLabel } from '@angular/material/form-field';
+import { MatFormField, MatLabel, MatError, MatSuffix } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
-import {
-  Firestore,
-  collection,
-  addDoc,
-  serverTimestamp,
-} from '@angular/fire/firestore';
+import { MatIcon } from '@angular/material/icon';
+import { MatIconButton } from '@angular/material/button';
+import { firstValueFrom } from 'rxjs';
 import { AuthLayoutComponent } from '../../auth/auth-layout/auth-layout.component';
+import { ApiService } from '../../../core/services/api.service';
+
+function passwordsMatch(control: AbstractControl): ValidationErrors | null {
+  const password = control.get('password')?.value as string;
+  const confirm = control.get('confirmPassword')?.value as string;
+  return password === confirm ? null : { mismatch: true };
+}
 
 @Component({
   selector: 'app-request-department',
@@ -25,7 +31,11 @@ import { AuthLayoutComponent } from '../../auth/auth-layout/auth-layout.componen
     RouterLink,
     MatFormField,
     MatLabel,
+    MatError,
+    MatSuffix,
     MatInput,
+    MatIcon,
+    MatIconButton,
     MatProgressSpinner,
     AuthLayoutComponent,
   ],
@@ -33,16 +43,23 @@ import { AuthLayoutComponent } from '../../auth/auth-layout/auth-layout.componen
   styleUrl: './request-department.component.scss',
 })
 export class RequestDepartmentComponent {
-  private firestore = inject(Firestore);
+  private api = inject(ApiService);
   private fb = inject(FormBuilder);
 
-  form: FormGroup = this.fb.group({
-    requesterName: ['', Validators.required],
-    requesterEmail: ['', [Validators.required, Validators.email]],
-    deptName: ['', Validators.required],
-    message: [''],
-  });
+  form: FormGroup = this.fb.group(
+    {
+      requesterName: ['', Validators.required],
+      requesterEmail: ['', [Validators.required, Validators.email]],
+      deptName: ['', Validators.required],
+      message: [''],
+      password: ['', [Validators.required, Validators.minLength(6)]],
+      confirmPassword: ['', Validators.required],
+    },
+    { validators: passwordsMatch },
+  );
 
+  showPassword = signal(false);
+  showConfirm = signal(false);
   loading = signal(false);
   submitted = signal(false);
   error = signal<string | null>(null);
@@ -53,12 +70,15 @@ export class RequestDepartmentComponent {
     this.error.set(null);
 
     try {
-      const col = collection(this.firestore, 'department_requests');
-      await addDoc(col, {
-        ...this.form.value,
-        status: 'pending',
-        createdAt: serverTimestamp(),
-      });
+      await firstValueFrom(
+        this.api.postPublic('/department/request', {
+          requesterName: this.form.value.requesterName as string,
+          requesterEmail: this.form.value.requesterEmail as string,
+          deptName: this.form.value.deptName as string,
+          description: this.form.value.message as string,
+          adminPassword: this.form.value.password as string,
+        }),
+      );
       this.submitted.set(true);
     } catch {
       this.error.set("Erreur lors de l'envoi. Réessayez.");
