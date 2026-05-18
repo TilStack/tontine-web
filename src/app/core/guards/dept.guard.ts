@@ -7,6 +7,9 @@ export const deptGuard: CanActivateFn = async () => {
   const router = inject(Router);
 
   const claims = await auth.getClaims();
+  if (claims?.['role'] === 'super_admin') {
+    return router.createUrlTree(['/admin']);
+  }
   if (!claims?.deptId) {
     return router.createUrlTree(['/auth/no-department']);
   }
