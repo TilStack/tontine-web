@@ -7,7 +7,7 @@ import {
   computed,
 } from '@angular/core';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
-import { RouterOutlet, RouterLink, RouterLinkActive } from '@angular/router';
+import { RouterOutlet, RouterLink, RouterLinkActive, Router } from '@angular/router';
 import { MatIcon } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
 import { UserService } from '../../../core/services/user.service';
@@ -48,6 +48,7 @@ export class AppShellComponent implements OnInit {
   private authService = inject(AuthService);
   private userService = inject(UserService);
   private destroyRef = inject(DestroyRef);
+  private router = inject(Router);
 
   profile = signal<UserProfile | null>(null);
   deptId = signal<string | null>(null);
@@ -75,7 +76,9 @@ export class AppShellComponent implements OnInit {
       });
   }
 
-  logout(): void {
-    this.authService.logout();
+  async logout(): Promise<void> {
+    console.log('logout called');
+    await this.authService.logout();
+    await this.router.navigate(['/auth/login']);
   }
 }

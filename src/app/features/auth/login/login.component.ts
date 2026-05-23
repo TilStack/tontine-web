@@ -73,7 +73,8 @@ export class LoginComponent {
     try {
       await this.auth.sendPasswordReset(email);
       this.resetSent.set(true);
-    } catch {
+    } catch (err) {
+      console.error('sendPasswordReset error:', err);
       this.resetError.set("Impossible d'envoyer l'email. Vérifiez l'adresse.");
     } finally {
       this.resetLoading.set(false);

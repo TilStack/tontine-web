@@ -1,4 +1,5 @@
 import { Component, inject } from '@angular/core';
+import { Router } from '@angular/router';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
 import { AuthService } from '../../../core/services/auth.service';
@@ -13,5 +14,11 @@ import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 })
 export class NoDepartmentComponent {
   private auth = inject(AuthService);
-  logout(): void { this.auth.logout(); }
+  private router = inject(Router);
+
+  async logout(): Promise<void> {
+    console.log('logout called');
+    await this.auth.logout();
+    await this.router.navigate(['/auth/login']);
+  }
 }
