@@ -35,8 +35,7 @@ export class SuperAdminDashboardComponent {
   pendingCount = computed(() => this.requests().length);
 
   async logout(): Promise<void> {
-    console.log('logout called');
     await this.auth.logout();
-    this.router.navigate(['/auth/login']);
+    await this.router.navigate(['/auth/login']);
   }
 }

@@ -74,8 +74,8 @@ service cloud.firestore {
         }
       }
 
-      // Caisse commune — solde doc, Admin SDK writes only
-      match /caisse {
+      // Caisse commune — doc unique /caisse/main, Admin SDK writes only
+      match /caisse/main {
         allow read: if inDept(deptId) && getUserRole(deptId) in ["admin", "bureau"];
         allow write: if false;
       }

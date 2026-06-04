@@ -77,7 +77,6 @@ export class AppShellComponent implements OnInit {
   }
 
   async logout(): Promise<void> {
-    console.log('logout called');
     await this.authService.logout();
     await this.router.navigate(['/auth/login']);
   }

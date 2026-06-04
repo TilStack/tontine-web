@@ -19,7 +19,7 @@ export class CaisseService {
   private api = inject(ApiService);
 
   watchCaisse(deptId: string): Observable<CaisseDoc | undefined> {
-    const ref = doc(this.firestore, `departments/${deptId}/caisse`);
+    const ref = doc(this.firestore, `departments/${deptId}/caisse/main`);
     return docData(ref) as Observable<CaisseDoc | undefined>;
   }
 

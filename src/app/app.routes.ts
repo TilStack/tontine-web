@@ -44,6 +44,28 @@ export const routes: Routes = [
         loadChildren: () =>
           import('./features/caisse/caisse.routes').then((m) => m.CAISSE_ROUTES),
       },
+      {
+        path: 'membres',
+        loadChildren: () =>
+          import('./features/membres/membres.routes').then((m) => m.MEMBRES_ROUTES),
+      },
+      {
+        path: 'cotisations',
+        loadChildren: () =>
+          import('./features/cotisations/cotisations.routes').then((m) => m.COTISATIONS_ROUTES),
+      },
+      {
+        path: 'invitations',
+        canActivate: [adminOrBureauGuard],
+        loadChildren: () =>
+          import('./features/invitations/invitations.routes').then((m) => m.INVITATIONS_ROUTES),
+      },
+      {
+        path: 'parametres',
+        canActivate: [adminOrBureauGuard],
+        loadChildren: () =>
+          import('./features/parametres/parametres.routes').then((m) => m.PARAMETRES_ROUTES),
+      },
     ],
   },
   { path: '', redirectTo: 'auth/login', pathMatch: 'full' },
