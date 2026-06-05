@@ -71,12 +71,12 @@ export async function closeCycle(
     });
 
     // Update saison memberOrder (and optionally mark completed)
-    const saisonUpdate: Record<string, unknown> = {memberOrder: newOrder};
+    const saisonUpdate: {[key: string]: admin.firestore.FieldValue | string | Date | unknown[]} = {memberOrder: newOrder};
     if (cycle["index"] === saison["totalCycles"]) {
       saisonUpdate["status"] = "completed";
       saisonUpdate["completedAt"] = now;
     }
-    txn.update(saisonRef, saisonUpdate);
+    txn.update(saisonRef, saisonUpdate as admin.firestore.UpdateData<admin.firestore.DocumentData>);
 
     // Update caisse: atomically increment solde and totalEntrees
     const caisseRef = db.doc(`departments/${deptId}/caisse`);
