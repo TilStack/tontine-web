@@ -1,10 +1,9 @@
 import { Component, inject, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { from, of, switchMap, map, catchError } from 'rxjs';
+import { from, of, switchMap, map, catchError, Observable } from 'rxjs';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
-import { MatButton } from '@angular/material/button';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { AuthService } from '../../core/services/auth.service';
 import { UserService } from '../../core/services/user.service';
@@ -18,6 +17,11 @@ interface DeptSettings {
   status?: string;
 }
 
+interface ParametresData {
+  dept: DeptSettings;
+  profile: any;
+}
+
 @Component({
   selector: 'app-parametres',
   standalone: true,
@@ -25,7 +29,6 @@ interface DeptSettings {
     MatCard, MatCardContent, MatCardHeader, MatCardTitle,
     MatFormField, MatLabel,
     MatInput,
-    MatButton,
     MatProgressSpinner,
   ],
   template: `
@@ -50,11 +53,11 @@ interface DeptSettings {
           <mat-card-content style="padding:16px;display:flex;flex-direction:column;gap:16px">
             <mat-form-field>
               <mat-label>Nom du département</mat-label>
-              <input matInput [value]="data()!.dept?.name ?? ''" readonly>
+              <input matInput [value]="data()!.dept.name ?? ''" readonly>
             </mat-form-field>
             <mat-form-field>
               <mat-label>Statut</mat-label>
-              <input matInput [value]="data()!.dept?.status ?? ''" readonly>
+              <input matInput [value]="data()!.dept.status ?? ''" readonly>
             </mat-form-field>
             <p style="color:#888;font-size:13px;margin:0">
               Pour modifier les paramètres du département, contactez le super administrateur.
@@ -70,9 +73,9 @@ export class ParametresComponent {
   private userService = inject(UserService);
   private firestore = inject(Firestore);
 
-  private data$ = from(this.auth.getClaims()).pipe(
-    switchMap((claims) => {
-      if (!claims?.deptId) return of(null);
+  private data$: Observable<ParametresData | null> = from(this.auth.getClaims()).pipe(
+    switchMap((claims): Observable<ParametresData | null> => {
+      if (!claims?.deptId) return of(null as ParametresData | null);
       const uid = this.auth.currentUser!.uid;
       const deptRef = doc(this.firestore, `departments/${claims.deptId}`);
       return (docData(deptRef) as any).pipe(
@@ -81,10 +84,10 @@ export class ParametresComponent {
             map((profile) => ({ dept, profile }))
           )
         ),
-        catchError(() => of(null))
+        catchError(() => of(null as ParametresData | null))
       );
     }),
-    catchError(() => of(null))
+    catchError(() => of(null as ParametresData | null))
   );
 
   data = toSignal(this.data$, { initialValue: null });

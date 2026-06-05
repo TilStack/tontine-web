@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { from, of, switchMap, map, catchError } from 'rxjs';
+import { from, of, switchMap, map, catchError, Observable } from 'rxjs';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
@@ -19,6 +19,11 @@ interface CotisationItem {
   paid: boolean;
   paidAt?: { toDate(): Date };
   penalized: boolean;
+}
+
+interface CotisationsData {
+  cycleId: string | null;
+  cotisations: CotisationItem[];
 }
 
 @Component({
@@ -99,21 +104,21 @@ export class CotisationsComponent {
 
   displayedColumns = ['uid', 'statut', 'paidAt'];
 
-  private data$ = from(this.auth.getClaims()).pipe(
-    switchMap((claims) => {
-      if (!claims?.deptId) return of(null);
+  private data$: Observable<CotisationsData | null> = from(this.auth.getClaims()).pipe(
+    switchMap((claims): Observable<CotisationsData | null> => {
+      if (!claims?.deptId) return of(null as CotisationsData | null);
       const deptId = claims.deptId;
       const saisonsRef = collection(this.firestore, `departments/${deptId}/saisons`);
       const activeSaisonQ = query(saisonsRef, where('status', '==', 'active'), limit(1));
       return (collectionData(activeSaisonQ, { idField: 'id' }) as any).pipe(
         switchMap((saisons: any[]) => {
-          if (!saisons.length) return of({ cycleId: null, cotisations: [] });
+          if (!saisons.length) return of({ cycleId: null, cotisations: [] as CotisationItem[] });
           const saisonId = saisons[0]['id'];
           const cyclesRef = collection(this.firestore, `departments/${deptId}/saisons/${saisonId}/cycles`);
           const openCycleQ = query(cyclesRef, where('status', '==', 'open'), limit(1));
           return (collectionData(openCycleQ, { idField: 'id' }) as any).pipe(
             switchMap((cycles: any[]) => {
-              if (!cycles.length) return of({ cycleId: null, cotisations: [] });
+              if (!cycles.length) return of({ cycleId: null, cotisations: [] as CotisationItem[] });
               const cycleId = cycles[0]['id'];
               const cotisRef = collection(
                 this.firestore,
@@ -128,7 +133,7 @@ export class CotisationsComponent {
         catchError(() => of({ cycleId: null, cotisations: [] as CotisationItem[] }))
       );
     }),
-    catchError(() => of(null))
+    catchError(() => of(null as CotisationsData | null))
   );
 
   data = toSignal(this.data$, { initialValue: null });

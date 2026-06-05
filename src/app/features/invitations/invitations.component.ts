@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { from, of, switchMap, combineLatest, map, catchError } from 'rxjs';
+import { from, of, switchMap, combineLatest, map, catchError, Observable } from 'rxjs';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -111,7 +111,7 @@ export class InvitationsComponent {
       const invRef = collection(this.firestore, `departments/${claims.deptId}/invitations`);
       return combineLatest([
         this.userService.watchProfile(claims.deptId, uid),
-        collectionData(invRef, { idField: 'token' }) as any,
+        (collectionData(invRef, { idField: 'token' }) as unknown as Observable<InvitationItem[]>),
       ]).pipe(
         map(([profile, invitations]: [any, InvitationItem[]]) => ({
           deptId: claims.deptId,
