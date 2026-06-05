@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { from, of, switchMap, combineLatest, map } from 'rxjs';
+import { from, of, switchMap, combineLatest, map, catchError } from 'rxjs';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatButton } from '@angular/material/button';
 import { MatIcon } from '@angular/material/icon';
@@ -112,15 +112,19 @@ export class InvitationsComponent {
       return combineLatest([
         this.userService.watchProfile(claims.deptId, uid),
         collectionData(invRef, { idField: 'token' }) as any,
-      ]).pipe(map(([profile, invitations]: [any, InvitationItem[]]) => ({
-        deptId: claims.deptId,
-        profile,
-        invitations,
-      })));
-    })
+      ]).pipe(
+        map(([profile, invitations]: [any, InvitationItem[]]) => ({
+          deptId: claims.deptId,
+          profile,
+          invitations,
+        })),
+        catchError(() => of(null))
+      );
+    }),
+    catchError(() => of(null))
   );
 
-  data = toSignal(this.data$);
+  data = toSignal(this.data$, { initialValue: null });
   isAdmin = computed(() => this.data()?.profile?.role === 'admin');
 
   openInviteDialog(): void {

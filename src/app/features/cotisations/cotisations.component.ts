@@ -1,6 +1,6 @@
 import { Component, inject } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { from, of, switchMap, map } from 'rxjs';
+import { from, of, switchMap, map, catchError } from 'rxjs';
 import { MatCard, MatCardContent } from '@angular/material/card';
 import { MatProgressSpinner } from '@angular/material/progress-spinner';
 import { MatIcon } from '@angular/material/icon';
@@ -124,10 +124,12 @@ export class CotisationsComponent {
               );
             })
           );
-        })
+        }),
+        catchError(() => of({ cycleId: null, cotisations: [] as CotisationItem[] }))
       );
-    })
+    }),
+    catchError(() => of(null))
   );
 
-  data = toSignal(this.data$);
+  data = toSignal(this.data$, { initialValue: null });
 }

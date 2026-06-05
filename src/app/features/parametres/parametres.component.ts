@@ -1,6 +1,6 @@
 import { Component, inject, computed } from '@angular/core';
 import { toSignal } from '@angular/core/rxjs-interop';
-import { from, of, switchMap } from 'rxjs';
+import { from, of, switchMap, map, catchError } from 'rxjs';
 import { MatCard, MatCardContent, MatCardHeader, MatCardTitle } from '@angular/material/card';
 import { MatFormField, MatLabel } from '@angular/material/form-field';
 import { MatInput } from '@angular/material/input';
@@ -78,13 +78,15 @@ export class ParametresComponent {
       return (docData(deptRef) as any).pipe(
         switchMap((dept: DeptSettings) =>
           this.userService.watchProfile(claims.deptId, uid).pipe(
-            switchMap((profile) => of({ dept, profile }))
+            map((profile) => ({ dept, profile }))
           )
-        )
+        ),
+        catchError(() => of(null))
       );
-    })
+    }),
+    catchError(() => of(null))
   );
 
-  data = toSignal(this.data$);
+  data = toSignal(this.data$, { initialValue: null });
   isAdmin = computed(() => this.data()?.profile?.role === 'admin');
 }
