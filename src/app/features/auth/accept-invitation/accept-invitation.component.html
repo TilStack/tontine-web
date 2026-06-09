@@ -1,6 +1,12 @@
 <app-auth-layout>
   @if (tokenValid() === null) {
-    <p class="body-text loading-state">Vérification du lien…</p>
+    <div class="loading-state">
+      <mat-progress-spinner diameter="32" mode="indeterminate" />
+      <p class="body-text">Vérification du lien…</p>
+      @if (slowApiWarning()) {
+        <p class="body-text slow-api-warning">Le serveur démarre, veuillez patienter (30s max)…</p>
+      }
+    </div>
   }
 
   @if (tokenValid() === false) {

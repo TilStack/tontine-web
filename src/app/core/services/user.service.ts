@@ -58,8 +58,8 @@ export class UserService {
     );
   }
 
-  sendInvitation(payload: { deptId: string; email: string; role: UserRole }): Promise<void> {
-    return this.post('/invitation/send', payload);
+  sendInvitation(payload: { deptId: string; email: string; role: UserRole }): Promise<{ token: string }> {
+    return this.post<{ token: string }>('/invitation/send', payload);
   }
 
   updateUserRole(payload: { deptId: string; userId: string; newRole: UserRole }): Promise<void> {

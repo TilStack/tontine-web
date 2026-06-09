@@ -14,7 +14,7 @@ import {
   createUserWithEmailAndPassword,
   updateProfile,
 } from '@angular/fire/auth';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { firstValueFrom } from 'rxjs';
 import { AuthLayoutComponent } from '../auth-layout/auth-layout.component';
 import { environment } from '../../../../environments/environment';
@@ -54,6 +54,8 @@ export class AcceptInvitationComponent implements OnInit {
     password: ['', [Validators.required, Validators.minLength(6)]],
   });
 
+  slowApiWarning = signal(false);
+
   async ngOnInit(): Promise<void> {
     const params = this.route.snapshot.queryParamMap;
     const dept = params.get('dept');
@@ -67,6 +69,9 @@ export class AcceptInvitationComponent implements OnInit {
     this.deptId.set(dept);
     this.token.set(token);
 
+    // Render.com free tier cold start peut prendre 30s — avertir après 5s
+    const slowTimer = setTimeout(() => this.slowApiWarning.set(true), 5000);
+
     try {
       const result = await firstValueFrom(
         this.http.post<{ email: string; deptName: string }>(
@@ -76,8 +81,11 @@ export class AcceptInvitationComponent implements OnInit {
       );
       this.invitationEmail.set(result.email);
       this.tokenValid.set(true);
-    } catch {
+    } catch (err) {
       this.tokenValid.set(false);
+    } finally {
+      clearTimeout(slowTimer);
+      this.slowApiWarning.set(false);
     }
   }
 
@@ -92,12 +100,18 @@ export class AcceptInvitationComponent implements OnInit {
     this.loading.set(true);
     this.error.set(null);
 
+    let firebaseUserCreated = false;
+    let currentUser: import('@angular/fire/auth').User | null = null;
+
     try {
       const { user } = await createUserWithEmailAndPassword(
         this.auth,
         this.invitationEmail()!,
         this.form.value.password as string,
       );
+      firebaseUserCreated = true;
+      currentUser = user;
+
       await updateProfile(user, {
         displayName: this.form.value.displayName as string,
       });
@@ -111,12 +125,32 @@ export class AcceptInvitationComponent implements OnInit {
         )
       );
 
+      // Attendre que Firebase propage les custom claims avant le refresh
+      await new Promise((resolve) => setTimeout(resolve, 500));
       await user.getIdToken(true);
       await this.router.navigate(['/app']);
-    } catch {
-      this.error.set(
-        'Une erreur est survenue. Vérifiez que le lien est valide.',
-      );
+    } catch (err) {
+      // Si le compte Firebase est créé mais que l'API a échoué → supprimer le compte
+      if (firebaseUserCreated && currentUser) {
+        try { await currentUser.delete(); } catch { /* ignore */ }
+      }
+
+      if (err instanceof HttpErrorResponse) {
+        const code = (err.error as { code?: string })?.code;
+        if (code === 'already-exists') {
+          this.error.set("Cette invitation a déjà été utilisée.");
+        } else if (code === 'deadline-exceeded') {
+          this.error.set("Ce lien d'invitation a expiré.");
+        } else if (code === 'permission-denied') {
+          this.error.set("Votre email ne correspond pas à cette invitation.");
+        } else {
+          this.error.set(`Erreur serveur (${err.status}). Réessayez.`);
+        }
+      } else if ((err as { code?: string })?.code === 'auth/email-already-in-use') {
+        this.error.set("Un compte existe déjà avec cet email. Connectez-vous.");
+      } else {
+        this.error.set("Une erreur est survenue. Vérifiez que le lien est valide.");
+      }
     } finally {
       this.loading.set(false);
     }
