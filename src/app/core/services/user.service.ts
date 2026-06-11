@@ -9,17 +9,14 @@ import {
   collectionData,
   serverTimestamp,
 } from '@angular/fire/firestore';
-import { Auth } from '@angular/fire/auth';
-import { HttpClient } from '@angular/common/http';
 import { Observable, firstValueFrom } from 'rxjs';
 import { UserProfile, UserRole } from '../models/user.model';
-import { environment } from '../../../environments/environment';
+import { ApiService } from './api.service';
 
 @Injectable({ providedIn: 'root' })
 export class UserService {
   private firestore = inject(Firestore);
-  private http = inject(HttpClient);
-  private auth = inject(Auth);
+  private api = inject(ApiService);
 
   watchProfile(deptId: string, uid: string): Observable<UserProfile | undefined> {
     const ref = doc(this.firestore, `departments/${deptId}/users/${uid}`);
@@ -49,21 +46,12 @@ export class UserService {
     await updateDoc(ref, { mustResetPassword: value });
   }
 
-  private async post<T = void>(path: string, body: unknown): Promise<T> {
-    const token = await this.auth.currentUser?.getIdToken();
-    return firstValueFrom(
-      this.http.post<T>(`${environment.apiUrl}${path}`, body, {
-        headers: { Authorization: `Bearer ${token ?? ''}` },
-      })
-    );
-  }
-
   sendInvitation(payload: { deptId: string; email: string; role: UserRole }): Promise<{ token: string }> {
-    return this.post<{ token: string }>('/invitation/send', payload);
+    return firstValueFrom(this.api.post<{ token: string }>('/invitation/send', payload));
   }
 
   updateUserRole(payload: { deptId: string; userId: string; newRole: UserRole }): Promise<void> {
-    return this.post('/member/update-role', payload);
+    return firstValueFrom(this.api.post('/member/update-role', payload));
   }
 
   createMember(payload: {
@@ -72,6 +60,6 @@ export class UserService {
     role: 'bureau' | 'membre';
     password: string;
   }): Promise<{ uid: string; displayName: string; email: string }> {
-    return this.post<{ uid: string; displayName: string; email: string }>('/member/create', payload);
+    return firstValueFrom(this.api.post<{ uid: string; displayName: string; email: string }>('/member/create', payload));
   }
 }
